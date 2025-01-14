@@ -1,5 +1,7 @@
 # ESN LAB 3 - 7 segment with avalon interface and IRQ Timer
 
+*note: for the best viewing experience, view this document in vscode with the [markdown preview enhanced by Yiyi Wang extension](https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced) installed, otherwise open the PDF version found [here](./readme.pdf)*
+
 to start cygwin from powershell:
 ```pwsh
 & 'C:\intelFPGA\18.1\nios2eds\Nios II Command Shell.bat'
@@ -27,6 +29,8 @@ In this lab we have to add a timer IP to the SoPc so that the NISO2 cpu gets one
 
 ## System architecture
 
+This will be quite similar to LAB2, with an added Timer connected to AVMM for setup and with an IRQ to report the tick.
+
 ```mermaid
 ---
 config:
@@ -52,41 +56,33 @@ RESET, NIOS2, 0.05
 
 ```plantuml
 @startuml
-title FPGA IP Block Diagram with Signals
 
-skinparam linetype polyline
-skinparam defaultFontName Arial
-skinparam rankdir TB  ' Top to Bottom flow
+rectangle NIOS2
+rectangle Reset
+rectangle Jtag
+rectangle "Clock 50MHz"
+rectangle "M10K Memory"
+rectangle "AVMM Data Bus"
+rectangle "AVMM Instruction Bus"
+rectangle "AV2SEGM3"
+rectangle timer_0
 
-' Main NIOS2 system
-rectangle "NIOS2 System" {
-  [CLK 50M] --> [NIOS2 : clk]
-  [RESET] --> [NIOS2 : reset]
-  [JTAG] --> [NIOS2 : debug]
-  [M10K memory] --> [NIOS2 : data_bus]
-  [NIOS2] --> [AVMM : data_avmm]
-}
-
-' AVMM Connections
-rectangle "AVMM Peripherals" {
-  [AVMM] --> [AV2SEGM : segm_ctrl]
-  [AV2SEGM] --> [7-Segment (Ones) : ctrl_data]
-  [AV2SEGM] --> [7-Segment (Tens) : ctrl_data]
-  [AV2SEGM] --> [7-Segment (Hundreds) : ctrl_data]
-
-  [AVMM] --> [Timer_0 : clk_timer]
-  [AVMM] --> [PIO button unused : unused]
-  [PIO button unused] --> [btn_i : "Button Input Signal"]
-}
-
-' IRQ and Timer
-rectangle "Interrupt System" {
-  [NIOS2] --> [IRQ]
-  [IRQ] --> [Timer_0 : irq]
-}
+NIOS2 <-u-> Reset 
+NIOS2 <-u-> "Clock 50MHz"
+NIOS2 <-d-> "AVMM Instruction Bus"
+NIOS2 <-d-> "AVMM Data Bus"
+"AVMM Instruction Bus" <-d-> "M10K Memory"
+"AVMM Data Bus" <-l-> Jtag
+"AVMM Data Bus" <-d-> "AV2SEGM3"
+"AVMM Data Bus" <-d-> timer_0
+timer_0 -u[#4567ff,dotted]-> NIOS2 : IRQ
+"AV2SEGM3" -d-> "7 segment 1"
+"AV2SEGM3" -d-> "7 segment 2"
+"AV2SEGM3" -d-> "7 segment 3"
 
 @enduml
 ```
+
 ## Progress
 
 The system is functionnal, both the 1 and 3 7 segment counters have been implmented, backed by C logic from the NIOS over the AVMM bus.
