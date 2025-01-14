@@ -46,6 +46,7 @@ set_global_assignment -library "lib_maoin" -name MISC_FILE [file join $::quartus
 set_global_assignment -library "lib_maoin" -name MISC_FILE [file join $::quartus(sip_path) "submodules/altera_merlin_master_agent.sv"]
 set_global_assignment -library "lib_maoin" -name MISC_FILE [file join $::quartus(sip_path) "submodules/altera_merlin_slave_translator.sv"]
 set_global_assignment -library "lib_maoin" -name MISC_FILE [file join $::quartus(sip_path) "submodules/altera_merlin_master_translator.sv"]
+set_global_assignment -library "lib_maoin" -name MISC_FILE [file join $::quartus(sip_path) "submodules/maoin_timer_0.vhd"]
 set_global_assignment -library "lib_maoin" -name MISC_FILE [file join $::quartus(sip_path) "submodules/maoin_ram.vhd"]
 set_global_assignment -library "lib_maoin" -name MISC_FILE [file join $::quartus(sip_path) "submodules/maoin_jtag_uart_0.vhd"]
 set_global_assignment -library "lib_maoin" -name MISC_FILE [file join $::quartus(sip_path) "submodules/maoin_cpu.v"]

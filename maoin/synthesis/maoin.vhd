@@ -107,6 +107,19 @@ architecture rtl of maoin is
 		);
 	end component maoin_ram;
 
+	component maoin_timer_0 is
+		port (
+			clk        : in  std_logic                     := 'X';             -- clk
+			reset_n    : in  std_logic                     := 'X';             -- reset_n
+			address    : in  std_logic_vector(2 downto 0)  := (others => 'X'); -- address
+			writedata  : in  std_logic_vector(15 downto 0) := (others => 'X'); -- writedata
+			readdata   : out std_logic_vector(15 downto 0);                    -- readdata
+			chipselect : in  std_logic                     := 'X';             -- chipselect
+			write_n    : in  std_logic                     := 'X';             -- write_n
+			irq        : out std_logic                                         -- irq
+		);
+	end component maoin_timer_0;
+
 	component maoin_mm_interconnect_0 is
 		port (
 			clk_clk_clk                                       : in  std_logic                     := 'X';             -- clk
@@ -153,7 +166,12 @@ architecture rtl of maoin is
 			ram_s1_writedata                                  : out std_logic_vector(31 downto 0);                    -- writedata
 			ram_s1_byteenable                                 : out std_logic_vector(3 downto 0);                     -- byteenable
 			ram_s1_chipselect                                 : out std_logic;                                        -- chipselect
-			ram_s1_clken                                      : out std_logic                                         -- clken
+			ram_s1_clken                                      : out std_logic;                                        -- clken
+			timer_0_s1_address                                : out std_logic_vector(2 downto 0);                     -- address
+			timer_0_s1_write                                  : out std_logic;                                        -- write
+			timer_0_s1_readdata                               : in  std_logic_vector(15 downto 0) := (others => 'X'); -- readdata
+			timer_0_s1_writedata                              : out std_logic_vector(15 downto 0);                    -- writedata
+			timer_0_s1_chipselect                             : out std_logic                                         -- chipselect
 		);
 	end component maoin_mm_interconnect_0;
 
@@ -163,6 +181,7 @@ architecture rtl of maoin is
 			reset         : in  std_logic                     := 'X'; -- reset
 			receiver0_irq : in  std_logic                     := 'X'; -- irq
 			receiver1_irq : in  std_logic                     := 'X'; -- irq
+			receiver2_irq : in  std_logic                     := 'X'; -- irq
 			sender_irq    : out std_logic_vector(31 downto 0)         -- irq
 		);
 	end component maoin_irq_mapper;
@@ -341,8 +360,14 @@ architecture rtl of maoin is
 	signal mm_interconnect_0_btn0_s1_address                               : std_logic_vector(1 downto 0);  -- mm_interconnect_0:btn0_s1_address -> btn0:address
 	signal mm_interconnect_0_btn0_s1_write                                 : std_logic;                     -- mm_interconnect_0:btn0_s1_write -> mm_interconnect_0_btn0_s1_write:in
 	signal mm_interconnect_0_btn0_s1_writedata                             : std_logic_vector(31 downto 0); -- mm_interconnect_0:btn0_s1_writedata -> btn0:writedata
+	signal mm_interconnect_0_timer_0_s1_chipselect                         : std_logic;                     -- mm_interconnect_0:timer_0_s1_chipselect -> timer_0:chipselect
+	signal mm_interconnect_0_timer_0_s1_readdata                           : std_logic_vector(15 downto 0); -- timer_0:readdata -> mm_interconnect_0:timer_0_s1_readdata
+	signal mm_interconnect_0_timer_0_s1_address                            : std_logic_vector(2 downto 0);  -- mm_interconnect_0:timer_0_s1_address -> timer_0:address
+	signal mm_interconnect_0_timer_0_s1_write                              : std_logic;                     -- mm_interconnect_0:timer_0_s1_write -> mm_interconnect_0_timer_0_s1_write:in
+	signal mm_interconnect_0_timer_0_s1_writedata                          : std_logic_vector(15 downto 0); -- mm_interconnect_0:timer_0_s1_writedata -> timer_0:writedata
 	signal irq_mapper_receiver0_irq                                        : std_logic;                     -- jtag_uart_0:av_irq -> irq_mapper:receiver0_irq
 	signal irq_mapper_receiver1_irq                                        : std_logic;                     -- btn0:irq -> irq_mapper:receiver1_irq
+	signal irq_mapper_receiver2_irq                                        : std_logic;                     -- timer_0:irq -> irq_mapper:receiver2_irq
 	signal cpu_irq_irq                                                     : std_logic_vector(31 downto 0); -- irq_mapper:sender_irq -> cpu:irq
 	signal rst_controller_reset_out_reset                                  : std_logic;                     -- rst_controller:reset_out -> [mm_interconnect_0:AV2SEGM3_0_reset_sink_reset_bridge_in_reset_reset, rst_controller_reset_out_reset:in]
 	signal rst_controller_001_reset_out_reset                              : std_logic;                     -- rst_controller_001:reset_out -> [irq_mapper:reset, mm_interconnect_0:cpu_reset_reset_bridge_in_reset_reset, ram:reset, rst_controller_001_reset_out_reset:in, rst_translator:in_reset]
@@ -352,7 +377,8 @@ architecture rtl of maoin is
 	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_read_ports_inv  : std_logic;                     -- mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_read:inv -> jtag_uart_0:av_read_n
 	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write_ports_inv : std_logic;                     -- mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write:inv -> jtag_uart_0:av_write_n
 	signal mm_interconnect_0_btn0_s1_write_ports_inv                       : std_logic;                     -- mm_interconnect_0_btn0_s1_write:inv -> btn0:write_n
-	signal rst_controller_reset_out_reset_ports_inv                        : std_logic;                     -- rst_controller_reset_out_reset:inv -> AV2SEGM3_0:reset_sink_reset
+	signal mm_interconnect_0_timer_0_s1_write_ports_inv                    : std_logic;                     -- mm_interconnect_0_timer_0_s1_write:inv -> timer_0:write_n
+	signal rst_controller_reset_out_reset_ports_inv                        : std_logic;                     -- rst_controller_reset_out_reset:inv -> [AV2SEGM3_0:reset_sink_reset, timer_0:reset_n]
 	signal rst_controller_001_reset_out_reset_ports_inv                    : std_logic;                     -- rst_controller_001_reset_out_reset:inv -> [btn0:reset_n, cpu:reset_n, jtag_uart_0:rst_n]
 
 begin
@@ -441,6 +467,18 @@ begin
 			freeze     => '0'                                     -- (terminated)
 		);
 
+	timer_0 : component maoin_timer_0
+		port map (
+			clk        => clk_clk,                                      --   clk.clk
+			reset_n    => rst_controller_reset_out_reset_ports_inv,     -- reset.reset_n
+			address    => mm_interconnect_0_timer_0_s1_address,         --    s1.address
+			writedata  => mm_interconnect_0_timer_0_s1_writedata,       --      .writedata
+			readdata   => mm_interconnect_0_timer_0_s1_readdata,        --      .readdata
+			chipselect => mm_interconnect_0_timer_0_s1_chipselect,      --      .chipselect
+			write_n    => mm_interconnect_0_timer_0_s1_write_ports_inv, --      .write_n
+			irq        => irq_mapper_receiver2_irq                      --   irq.irq
+		);
+
 	mm_interconnect_0 : component maoin_mm_interconnect_0
 		port map (
 			clk_clk_clk                                       => clk_clk,                                                     --                                     clk_clk.clk
@@ -487,7 +525,12 @@ begin
 			ram_s1_writedata                                  => mm_interconnect_0_ram_s1_writedata,                          --                                            .writedata
 			ram_s1_byteenable                                 => mm_interconnect_0_ram_s1_byteenable,                         --                                            .byteenable
 			ram_s1_chipselect                                 => mm_interconnect_0_ram_s1_chipselect,                         --                                            .chipselect
-			ram_s1_clken                                      => mm_interconnect_0_ram_s1_clken                               --                                            .clken
+			ram_s1_clken                                      => mm_interconnect_0_ram_s1_clken,                              --                                            .clken
+			timer_0_s1_address                                => mm_interconnect_0_timer_0_s1_address,                        --                                  timer_0_s1.address
+			timer_0_s1_write                                  => mm_interconnect_0_timer_0_s1_write,                          --                                            .write
+			timer_0_s1_readdata                               => mm_interconnect_0_timer_0_s1_readdata,                       --                                            .readdata
+			timer_0_s1_writedata                              => mm_interconnect_0_timer_0_s1_writedata,                      --                                            .writedata
+			timer_0_s1_chipselect                             => mm_interconnect_0_timer_0_s1_chipselect                      --                                            .chipselect
 		);
 
 	irq_mapper : component maoin_irq_mapper
@@ -496,6 +539,7 @@ begin
 			reset         => rst_controller_001_reset_out_reset, -- clk_reset.reset
 			receiver0_irq => irq_mapper_receiver0_irq,           -- receiver0.irq
 			receiver1_irq => irq_mapper_receiver1_irq,           -- receiver1.irq
+			receiver2_irq => irq_mapper_receiver2_irq,           -- receiver2.irq
 			sender_irq    => cpu_irq_irq                         --    sender.irq
 		);
 
@@ -636,6 +680,8 @@ begin
 	mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write_ports_inv <= not mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write;
 
 	mm_interconnect_0_btn0_s1_write_ports_inv <= not mm_interconnect_0_btn0_s1_write;
+
+	mm_interconnect_0_timer_0_s1_write_ports_inv <= not mm_interconnect_0_timer_0_s1_write;
 
 	rst_controller_reset_out_reset_ports_inv <= not rst_controller_reset_out_reset;
 
