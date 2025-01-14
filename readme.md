@@ -2,6 +2,12 @@
 
 *note: for the best viewing experience, view this document in vscode with the [markdown preview enhanced by Yiyi Wang extension](https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced) installed, otherwise open the PDF version found [here](./readme.pdf)*
 
+*you may need to set this setting in the extension's settings (done through the GUI):*
+```yaml
+plantuml server:
+https://kroki.io/plantuml/svg/
+```
+
 to start cygwin from powershell:
 ```pwsh
 & 'C:\intelFPGA\18.1\nios2eds\Nios II Command Shell.bat'
@@ -72,9 +78,10 @@ NIOS2 <-u-> "Clock 50MHz"
 NIOS2 <-d-> "AVMM Instruction Bus"
 NIOS2 <-d-> "AVMM Data Bus"
 "AVMM Instruction Bus" <-d-> "M10K Memory"
-"AVMM Data Bus" <-l-> Jtag
-"AVMM Data Bus" <-d-> "AV2SEGM3"
-"AVMM Data Bus" <-d-> timer_0
+"AVMM Data Bus" -l-> Jtag
+"AVMM Data Bus" -d-> "AV2SEGM3"
+"AVMM Data Bus" -d-> timer_0
+"AVMM Data Bus" -r-> "M10K Memory"
 timer_0 -u[#4567ff,dotted]-> NIOS2 : IRQ
 "AV2SEGM3" -d-> "7 segment 1"
 "AV2SEGM3" -d-> "7 segment 2"
@@ -85,19 +92,46 @@ timer_0 -u[#4567ff,dotted]-> NIOS2 : IRQ
 
 ## Progress
 
-The system is functionnal, both the 1 and 3 7 segment counters have been implmented, backed by C logic from the NIOS over the AVMM bus.
-
+The system is functionnal, the timer has been successfully added to the SOPc and does respond with it's IRQs, turns out configuration over AVMM wasn't even required because the timer was properly created as a bare-bones simplified timer with a 1 second period in QSYS.
 ## Conclusion
 
-The AVMM bus widths need to be managed with care as using an 8 bit bus width will cause the default 32 bit IOWR/RD functions from the NIOS2 HAL to fail, to fix this using the 8 bit variants of these functions is require, as follows:
+Timers are pretty easy to use, there was no major issue with this lab that would need to be highlighted.
+
+The final Sopc code is as follows:
 
 ```c
-IOWR_8DIRECT(AV2SEGM3_0_BASE, 0x0, ones);
-alt_printf("ones: %x\r\n", ones);
-IOWR_8DIRECT(AV2SEGM3_0_BASE, 0x1, tens);
-alt_printf("tens: %x\r\n", tens);
-IOWR_8DIRECT(AV2SEGM3_0_BASE, 0x2, hundreds);
-alt_printf("hundreds: %x\r\n", hundreds);
+volatile alt_u16 segmVal = 0;
+volatile bool update_display = false;
+
+int main() {
+    alt_printf("init\r\n");
+    alt_ic_irq_disable(TIMER_0_IRQ_INTERRUPT_CONTROLLER_ID, TIMER_0_IRQ);
+    alt_ic_isr_register(TIMER_0_IRQ_INTERRUPT_CONTROLLER_ID, TIMER_0_IRQ, timer_isr, 0x00, 0x00);
+    alt_ic_irq_enable(TIMER_0_IRQ_INTERRUPT_CONTROLLER_ID, TIMER_0_IRQ);
+
+    alt_printf("Starting Timer Interrupt Demo\r\n");
+
+    while (1) {
+        if (update_display) {
+            /** number to tens/zeros... logic here, see source file **/
+        }
+       usleep(10000);
+    }
+
+    return 0;
+}
 ```
 
-The actual AV2SEGM3 ip (the one with 3 7 segments) has been implemented using an address mode set of AVMM registers, where each register corresponds to one 7 segment.
+with the following ISR being called with the new ISR api:
+
+```c
+static void timer_isr(void *context) {
+    alt_printf("trig\r\n");
+    IOWR_ALTERA_AVALON_TIMER_STATUS(TIMER_0_BASE, 0);
+    segmVal++;
+    if (segmVal > 999) {
+        segmVal = 0;
+    }
+    update_display = true;
+}
+```
