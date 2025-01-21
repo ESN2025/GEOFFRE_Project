@@ -111,7 +111,7 @@ NIOS2 <-d-> "AVMM Data Bus"
 
 ## Progress
 
-I won't document the things i already documented in the [main(old)]() branch already, so i'll only show what i've change since
+I won't document the things i already documented in the [main(old)](https://github.com/ESN2025/GEOFFRE_Project/tree/master) branch already, so i'll only show what i've change since
 
 First of all and the most obvious, a VGA interface has been made from scratch. It outputs 640x480 12 bit RGB video at 30 Fps from a 50 Mhz clock (might be 60 Fps but i have conflicting info on this because in theory it should work at 25.125Mhz but this frequency doesn't work right, whereas just 50 does? moving on...).
 
