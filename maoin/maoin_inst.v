@@ -1,9 +1,14 @@
 	maoin u0 (
-		.btn0_i_export         (<connected-to-btn0_i_export>),         //   btn0_i.export
-		.clk_clk               (<connected-to-clk_clk>),               //      clk.clk
-		.reset_reset_n         (<connected-to-reset_reset_n>),         //    reset.reset_n
-		.segm_con_new_signal   (<connected-to-segm_con_new_signal>),   // segm_con.new_signal
-		.segm_con_new_signal_1 (<connected-to-segm_con_new_signal_1>), //         .new_signal_1
-		.segm_con_new_signal_2 (<connected-to-segm_con_new_signal_2>)  //         .new_signal_2
+		.btn0_export                         (<connected-to-btn0_export>),                         //                     btn0.export
+		.clk_clk                             (<connected-to-clk_clk>),                             //                      clk.clk
+		.opencores_i2c_0_export_0_scl_pad_io (<connected-to-opencores_i2c_0_export_0_scl_pad_io>), // opencores_i2c_0_export_0.scl_pad_io
+		.opencores_i2c_0_export_0_sda_pad_io (<connected-to-opencores_i2c_0_export_0_sda_pad_io>), //                         .sda_pad_io
+		.reset_reset_n                       (<connected-to-reset_reset_n>),                       //                    reset.reset_n
+		.segm_con_new_signal                 (<connected-to-segm_con_new_signal>),                 //                 segm_con.new_signal
+		.segm_con_new_signal_1               (<connected-to-segm_con_new_signal_1>),               //                         .new_signal_1
+		.segm_con_new_signal_2               (<connected-to-segm_con_new_signal_2>),               //                         .new_signal_2
+		.segm_con2_new_signal                (<connected-to-segm_con2_new_signal>),                //                segm_con2.new_signal
+		.segm_con2_new_signal_1              (<connected-to-segm_con2_new_signal_1>),              //                         .new_signal_1
+		.segm_con2_new_signal_2              (<connected-to-segm_con2_new_signal_2>)               //                         .new_signal_2
 	);
 

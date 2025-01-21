@@ -49,13 +49,13 @@
    type="SYSTEM_VERILOG"
    library="rsp_demux" />
  <file
-   path="simulation/submodules/maoin_mm_interconnect_0_cmd_mux_002.sv"
+   path="simulation/submodules/maoin_mm_interconnect_0_cmd_mux_004.sv"
    type="SYSTEM_VERILOG"
-   library="cmd_mux_002" />
+   library="cmd_mux_004" />
  <file
    path="simulation/submodules/altera_merlin_arbitrator.sv"
    type="SYSTEM_VERILOG"
-   library="cmd_mux_002" />
+   library="cmd_mux_004" />
  <file
    path="simulation/submodules/maoin_mm_interconnect_0_cmd_mux.sv"
    type="SYSTEM_VERILOG"
@@ -113,9 +113,9 @@
    type="SYSTEM_VERILOG"
    library="AV2SEGM3_0_avalon_slave_burst_adapter" />
  <file
-   path="simulation/submodules/maoin_mm_interconnect_0_router_004.sv"
+   path="simulation/submodules/maoin_mm_interconnect_0_router_006.sv"
    type="SYSTEM_VERILOG"
-   library="router_004" />
+   library="router_006" />
  <file
    path="simulation/submodules/maoin_mm_interconnect_0_router_003.sv"
    type="SYSTEM_VERILOG"
@@ -241,19 +241,63 @@
    type="VERILOG"
    library="mm_interconnect_0" />
  <file
-   path="simulation/submodules/maoin_timer_0.vhd"
-   type="VHDL"
-   library="timer_0" />
+   path="simulation/submodules/altera_customins_slave_translator.sv"
+   type="SYSTEM_VERILOG"
+   library="cpu_custom_instruction_master_multi_slave_translator0" />
+ <file
+   path="simulation/submodules/maoin_cpu_custom_instruction_master_multi_xconnect.sv"
+   type="SYSTEM_VERILOG"
+   library="cpu_custom_instruction_master_multi_xconnect" />
+ <file
+   path="simulation/submodules/altera_customins_master_translator.v"
+   type="VERILOG"
+   library="cpu_custom_instruction_master_translator" />
  <file path="simulation/submodules/maoin_ram.vhd" type="VHDL" library="ram" />
+ <file
+   path="simulation/submodules/maoin_pio_0.vhd"
+   type="VHDL"
+   library="pio_0" />
+ <file
+   path="simulation/submodules/opencores_i2c.v"
+   type="VERILOG"
+   library="opencores_i2c_0" />
+ <file
+   path="simulation/submodules/i2c_master_bit_ctrl.v"
+   type="VERILOG"
+   library="opencores_i2c_0" />
+ <file
+   path="simulation/submodules/i2c_master_byte_ctrl.v"
+   type="VERILOG"
+   library="opencores_i2c_0" />
+ <file
+   path="simulation/submodules/i2c_master_defines.v"
+   type="VERILOG"
+   library="opencores_i2c_0" />
+ <file
+   path="simulation/submodules/i2c_master_top.v"
+   type="VERILOG"
+   library="opencores_i2c_0" />
+ <file
+   path="simulation/submodules/timescale.v"
+   type="VERILOG"
+   library="opencores_i2c_0" />
+ <file
+   path="simulation/submodules/fpoint_wrapper.v"
+   type="VERILOG"
+   library="nios_custom_instr_floating_point_0" />
+ <file
+   path="simulation/submodules/fpoint_qsys.v"
+   type="VERILOG"
+   library="nios_custom_instr_floating_point_0" />
+ <file
+   path="simulation/submodules/fpoint_hw_qsys.v"
+   type="VERILOG"
+   library="nios_custom_instr_floating_point_0" />
  <file
    path="simulation/submodules/maoin_jtag_uart_0.vhd"
    type="VHDL"
    library="jtag_uart_0" />
  <file path="simulation/submodules/maoin_cpu.v" type="VERILOG" library="cpu" />
- <file
-   path="simulation/submodules/maoin_btn0.vhd"
-   type="VHDL"
-   library="btn0" />
  <file
    path="simulation/submodules/AV2SEGM3.vhd"
    type="VHDL"

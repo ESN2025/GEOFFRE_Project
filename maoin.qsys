@@ -13,7 +13,7 @@
    {
       datum _sortIndex
       {
-         value = "5";
+         value = "4";
          type = "int";
       }
    }
@@ -21,23 +21,23 @@
    {
       datum baseAddress
       {
-         value = "69688";
+         value = "266320";
          type = "String";
       }
    }
-   element btn0
+   element AV2SEGM3_1
    {
       datum _sortIndex
       {
-         value = "4";
+         value = "5";
          type = "int";
       }
    }
-   element btn0.s1
+   element AV2SEGM3_1.avalon_slave
    {
       datum baseAddress
       {
-         value = "69664";
+         value = "266316";
          type = "String";
       }
    }
@@ -61,7 +61,7 @@
    {
       datum baseAddress
       {
-         value = "67584";
+         value = "264192";
          type = "String";
       }
    }
@@ -77,7 +77,47 @@
    {
       datum baseAddress
       {
-         value = "69680";
+         value = "266304";
+         type = "String";
+      }
+   }
+   element nios_custom_instr_floating_point_0
+   {
+      datum _sortIndex
+      {
+         value = "7";
+         type = "int";
+      }
+   }
+   element opencores_i2c_0
+   {
+      datum _sortIndex
+      {
+         value = "6";
+         type = "int";
+      }
+   }
+   element opencores_i2c_0.avalon_slave_0
+   {
+      datum baseAddress
+      {
+         value = "266240";
+         type = "String";
+      }
+   }
+   element pio_0
+   {
+      datum _sortIndex
+      {
+         value = "8";
+         type = "int";
+      }
+   }
+   element pio_0.s1
+   {
+      datum baseAddress
+      {
+         value = "266288";
          type = "String";
       }
    }
@@ -93,23 +133,7 @@
    {
       datum baseAddress
       {
-         value = "32768";
-         type = "String";
-      }
-   }
-   element timer_0
-   {
-      datum _sortIndex
-      {
-         value = "6";
-         type = "int";
-      }
-   }
-   element timer_0.s1
-   {
-      datum baseAddress
-      {
-         value = "69632";
+         value = "131072";
          type = "String";
       }
    }
@@ -135,32 +159,29 @@
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface
-   name="btn0_i"
-   internal="btn0.external_connection"
+   name="btn0"
+   internal="pio_0.external_connection"
    type="conduit"
    dir="end" />
  <interface name="clk" internal="clk.clk_in" type="clock" dir="end" />
+ <interface
+   name="opencores_i2c_0_export_0"
+   internal="opencores_i2c_0.export_0"
+   type="conduit"
+   dir="end" />
  <interface name="reset" internal="clk.clk_in_reset" type="reset" dir="end" />
  <interface
    name="segm_con"
    internal="AV2SEGM3_0.conduit_end"
    type="conduit"
    dir="end" />
+ <interface
+   name="segm_con2"
+   internal="AV2SEGM3_1.conduit_end"
+   type="conduit"
+   dir="end" />
  <module name="AV2SEGM3_0" kind="AV2SEGM3" version="1.0" enabled="1" />
- <module name="btn0" kind="altera_avalon_pio" version="20.1" enabled="1">
-  <parameter name="bitClearingEdgeCapReg" value="true" />
-  <parameter name="bitModifyingOutReg" value="false" />
-  <parameter name="captureEdge" value="true" />
-  <parameter name="clockRate" value="50000000" />
-  <parameter name="direction" value="Input" />
-  <parameter name="edgeType" value="RISING" />
-  <parameter name="generateIRQ" value="true" />
-  <parameter name="irqType" value="EDGE" />
-  <parameter name="resetValue" value="0" />
-  <parameter name="simDoTestBenchWiring" value="true" />
-  <parameter name="simDrivenValue" value="0" />
-  <parameter name="width" value="1" />
- </module>
+ <module name="AV2SEGM3_1" kind="AV2SEGM3" version="1.0" enabled="1" />
  <module name="clk" kind="clock_source" version="20.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -180,14 +201,14 @@
   <parameter name="cpuArchRev" value="1" />
   <parameter name="cpuID" value="0" />
   <parameter name="cpuReset" value="false" />
-  <parameter name="customInstSlavesSystemInfo" value="&lt;info/&gt;" />
+  <parameter name="customInstSlavesSystemInfo"><![CDATA[<info><slave name="nios_custom_instr_floating_point_0" baseAddress="252" addressSpan="4" clockCycleType="VARIABLE" /></info>]]></parameter>
   <parameter name="customInstSlavesSystemInfo_nios_a" value="&lt;info/&gt;" />
   <parameter name="customInstSlavesSystemInfo_nios_b" value="&lt;info/&gt;" />
   <parameter name="customInstSlavesSystemInfo_nios_c" value="&lt;info/&gt;" />
-  <parameter name="dataAddrWidth" value="17" />
+  <parameter name="dataAddrWidth" value="19" />
   <parameter name="dataMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="dataMasterHighPerformanceMapParam" value="" />
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='ram.s1' start='0x8000' end='0xCE80' type='altera_avalon_onchip_memory2.s1' /><slave name='cpu.debug_mem_slave' start='0x10800' end='0x11000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='timer_0.s1' start='0x11000' end='0x11020' type='altera_avalon_timer.s1' /><slave name='btn0.s1' start='0x11020' end='0x11030' type='altera_avalon_pio.s1' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x11030' end='0x11038' type='altera_avalon_jtag_uart.avalon_jtag_slave' /><slave name='AV2SEGM3_0.avalon_slave' start='0x11038' end='0x1103C' type='AV2SEGM3.avalon_slave' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='ram.s1' start='0x20000' end='0x386A0' type='altera_avalon_onchip_memory2.s1' /><slave name='cpu.debug_mem_slave' start='0x40800' end='0x41000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='opencores_i2c_0.avalon_slave_0' start='0x41000' end='0x41020' type='opencores_i2c.avalon_slave_0' /><slave name='pio_0.s1' start='0x41030' end='0x41040' type='altera_avalon_pio.s1' /><slave name='jtag_uart_0.avalon_jtag_slave' start='0x41040' end='0x41048' type='altera_avalon_jtag_uart.avalon_jtag_slave' /><slave name='AV2SEGM3_1.avalon_slave' start='0x4104C' end='0x41050' type='AV2SEGM3.avalon_slave' /><slave name='AV2SEGM3_0.avalon_slave' start='0x41050' end='0x41054' type='AV2SEGM3.avalon_slave' /></address-map>]]></parameter>
   <parameter name="data_master_high_performance_paddr_base" value="0" />
   <parameter name="data_master_high_performance_paddr_size" value="0" />
   <parameter name="data_master_paddr_base" value="0" />
@@ -225,8 +246,8 @@
   <parameter name="icache_size" value="4096" />
   <parameter name="icache_tagramBlockType" value="Automatic" />
   <parameter name="impl" value="Tiny" />
-  <parameter name="instAddrWidth" value="17" />
-  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='ram.s1' start='0x8000' end='0xCE80' type='altera_avalon_onchip_memory2.s1' /><slave name='cpu.debug_mem_slave' start='0x10800' end='0x11000' type='altera_nios2_gen2.debug_mem_slave' /></address-map>]]></parameter>
+  <parameter name="instAddrWidth" value="19" />
+  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='ram.s1' start='0x20000' end='0x386A0' type='altera_avalon_onchip_memory2.s1' /><slave name='cpu.debug_mem_slave' start='0x40800' end='0x41000' type='altera_nios2_gen2.debug_mem_slave' /></address-map>]]></parameter>
   <parameter name="instructionMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="instructionMasterHighPerformanceMapParam" value="" />
   <parameter name="instruction_master_high_performance_paddr_base" value="0" />
@@ -255,8 +276,8 @@
   <parameter name="mpu_useLimit" value="false" />
   <parameter name="mpx_enabled" value="false" />
   <parameter name="mul_32_impl" value="2" />
-  <parameter name="mul_64_impl" value="0" />
-  <parameter name="mul_shift_choice" value="0" />
+  <parameter name="mul_64_impl" value="1" />
+  <parameter name="mul_shift_choice" value="1" />
   <parameter name="ocimem_ramBlockType" value="Automatic" />
   <parameter name="ocimem_ramInit" value="false" />
   <parameter name="regfile_ramBlockType" value="Automatic" />
@@ -365,6 +386,28 @@
   <parameter name="writeIRQThreshold" value="8" />
  </module>
  <module
+   name="nios_custom_instr_floating_point_0"
+   kind="altera_nios_custom_instr_floating_point"
+   version="20.1"
+   enabled="1">
+  <parameter name="useDivider" value="1" />
+ </module>
+ <module name="opencores_i2c_0" kind="opencores_i2c" version="9.1" enabled="1" />
+ <module name="pio_0" kind="altera_avalon_pio" version="20.1" enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="true" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="true" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="true" />
+  <parameter name="irqType" value="EDGE" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="1" />
+ </module>
+ <module
    name="ram"
    kind="altera_avalon_onchip_memory2"
    version="20.1"
@@ -384,7 +427,7 @@
   <parameter name="initMemContent" value="false" />
   <parameter name="initializationFileName" value="onchip_mem.hex" />
   <parameter name="instanceID" value="NONE" />
-  <parameter name="memorySize" value="20096" />
+  <parameter name="memorySize" value="100000" />
   <parameter name="readDuringWriteMode" value="DONT_CARE" />
   <parameter name="resetrequest_enabled" value="true" />
   <parameter name="simAllowMRAMContentsFile" value="false" />
@@ -396,25 +439,13 @@
   <parameter name="useShallowMemBlocks" value="false" />
   <parameter name="writable" value="true" />
  </module>
- <module name="timer_0" kind="altera_avalon_timer" version="20.1" enabled="1">
-  <parameter name="alwaysRun" value="true" />
-  <parameter name="counterSize" value="32" />
-  <parameter name="fixedPeriod" value="true" />
-  <parameter name="period" value="1" />
-  <parameter name="periodUnits" value="SEC" />
-  <parameter name="resetOutput" value="false" />
-  <parameter name="snapshot" value="false" />
-  <parameter name="systemFrequency" value="50000000" />
-  <parameter name="timeoutPulseOutput" value="false" />
-  <parameter name="watchdogPulse" value="2" />
- </module>
  <connection
    kind="avalon"
    version="20.1"
    start="cpu.data_master"
    end="jtag_uart_0.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00011030" />
+  <parameter name="baseAddress" value="0x00041040" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -423,7 +454,25 @@
    start="cpu.data_master"
    end="AV2SEGM3_0.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00011038" />
+  <parameter name="baseAddress" value="0x00041050" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="20.1"
+   start="cpu.data_master"
+   end="AV2SEGM3_1.avalon_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0004104c" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="20.1"
+   start="cpu.data_master"
+   end="opencores_i2c_0.avalon_slave_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00041000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -432,22 +481,17 @@
    start="cpu.data_master"
    end="cpu.debug_mem_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00010800" />
+  <parameter name="baseAddress" value="0x00040800" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="avalon" version="20.1" start="cpu.data_master" end="ram.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x8000" />
+  <parameter name="baseAddress" value="0x00020000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
- <connection kind="avalon" version="20.1" start="cpu.data_master" end="btn0.s1">
+ <connection kind="avalon" version="20.1" start="cpu.data_master" end="pio_0.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00011020" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection kind="avalon" version="20.1" start="cpu.data_master" end="timer_0.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00011000" />
+  <parameter name="baseAddress" value="0x00041030" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -456,7 +500,7 @@
    start="cpu.instruction_master"
    end="cpu.debug_mem_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00010800" />
+  <parameter name="baseAddress" value="0x00040800" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -465,42 +509,73 @@
    start="cpu.instruction_master"
    end="ram.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x8000" />
+  <parameter name="baseAddress" value="0x00020000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="clock" version="20.1" start="clk.clk" end="cpu.clk" />
  <connection kind="clock" version="20.1" start="clk.clk" end="jtag_uart_0.clk" />
- <connection kind="clock" version="20.1" start="clk.clk" end="btn0.clk" />
- <connection kind="clock" version="20.1" start="clk.clk" end="timer_0.clk" />
+ <connection kind="clock" version="20.1" start="clk.clk" end="pio_0.clk" />
  <connection kind="clock" version="20.1" start="clk.clk" end="ram.clk1" />
  <connection
    kind="clock"
    version="20.1"
    start="clk.clk"
+   end="opencores_i2c_0.clock" />
+ <connection
+   kind="clock"
+   version="20.1"
+   start="clk.clk"
    end="AV2SEGM3_0.clock_sink" />
+ <connection
+   kind="clock"
+   version="20.1"
+   start="clk.clk"
+   end="AV2SEGM3_1.clock_sink" />
+ <connection
+   kind="interrupt"
+   version="20.1"
+   start="cpu.irq"
+   end="opencores_i2c_0.interrupt_sender">
+  <parameter name="irqNumber" value="1" />
+ </connection>
  <connection kind="interrupt" version="20.1" start="cpu.irq" end="jtag_uart_0.irq">
   <parameter name="irqNumber" value="0" />
  </connection>
- <connection kind="interrupt" version="20.1" start="cpu.irq" end="btn0.irq">
-  <parameter name="irqNumber" value="1" />
- </connection>
- <connection kind="interrupt" version="20.1" start="cpu.irq" end="timer_0.irq">
+ <connection kind="interrupt" version="20.1" start="cpu.irq" end="pio_0.irq">
   <parameter name="irqNumber" value="2" />
  </connection>
+ <connection
+   kind="nios_custom_instruction"
+   version="20.1"
+   start="cpu.custom_instruction_master"
+   end="nios_custom_instr_floating_point_0.s1">
+  <parameter name="CIName">nios_custom_instr_floating_point_0</parameter>
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="252" />
+ </connection>
+ <connection
+   kind="reset"
+   version="20.1"
+   start="clk.clk_reset"
+   end="opencores_i2c_0.clock_reset" />
  <connection kind="reset" version="20.1" start="clk.clk_reset" end="cpu.reset" />
  <connection
    kind="reset"
    version="20.1"
    start="clk.clk_reset"
    end="jtag_uart_0.reset" />
- <connection kind="reset" version="20.1" start="clk.clk_reset" end="btn0.reset" />
- <connection kind="reset" version="20.1" start="clk.clk_reset" end="timer_0.reset" />
+ <connection kind="reset" version="20.1" start="clk.clk_reset" end="pio_0.reset" />
  <connection kind="reset" version="20.1" start="clk.clk_reset" end="ram.reset1" />
  <connection
    kind="reset"
    version="20.1"
    start="clk.clk_reset"
    end="AV2SEGM3_0.reset_sink" />
+ <connection
+   kind="reset"
+   version="20.1"
+   start="clk.clk_reset"
+   end="AV2SEGM3_1.reset_sink" />
  <connection
    kind="reset"
    version="20.1"
@@ -511,11 +586,6 @@
    version="20.1"
    start="cpu.debug_reset_request"
    end="jtag_uart_0.reset" />
- <connection
-   kind="reset"
-   version="20.1"
-   start="cpu.debug_reset_request"
-   end="btn0.reset" />
  <connection
    kind="reset"
    version="20.1"
