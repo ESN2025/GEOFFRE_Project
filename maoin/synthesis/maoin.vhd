@@ -8,12 +8,22 @@ use IEEE.numeric_std.all;
 
 entity maoin is
 	port (
-		btn0_i_export         : in  std_logic                    := '0'; --   btn0_i.export
-		clk_clk               : in  std_logic                    := '0'; --      clk.clk
-		reset_reset_n         : in  std_logic                    := '0'; --    reset.reset_n
-		segm_con_new_signal   : out std_logic_vector(7 downto 0);        -- segm_con.new_signal
-		segm_con_new_signal_1 : out std_logic_vector(7 downto 0);        --         .new_signal_1
-		segm_con_new_signal_2 : out std_logic_vector(7 downto 0)         --         .new_signal_2
+		btn0_export                         : in    std_logic                    := '0'; --                     btn0.export
+		clk_clk                             : in    std_logic                    := '0'; --                      clk.clk
+		opencores_i2c_0_export_0_scl_pad_io : inout std_logic                    := '0'; -- opencores_i2c_0_export_0.scl_pad_io
+		opencores_i2c_0_export_0_sda_pad_io : inout std_logic                    := '0'; --                         .sda_pad_io
+		reset_reset_n                       : in    std_logic                    := '0'; --                    reset.reset_n
+		segm_con_new_signal                 : out   std_logic_vector(7 downto 0);        --                 segm_con.new_signal
+		segm_con_new_signal_1               : out   std_logic_vector(7 downto 0);        --                         .new_signal_1
+		segm_con_new_signal_2               : out   std_logic_vector(7 downto 0);        --                         .new_signal_2
+		segm_con2_new_signal                : out   std_logic_vector(7 downto 0);        --                segm_con2.new_signal
+		segm_con2_new_signal_1              : out   std_logic_vector(7 downto 0);        --                         .new_signal_1
+		segm_con2_new_signal_2              : out   std_logic_vector(7 downto 0);        --                         .new_signal_2
+		vga_0_vga_g                         : out   std_logic_vector(3 downto 0);        --                vga_0_vga.g
+		vga_0_vga_b                         : out   std_logic_vector(3 downto 0);        --                         .b
+		vga_0_vga_hsync                     : out   std_logic;                           --                         .hsync
+		vga_0_vga_vsync                     : out   std_logic;                           --                         .vsync
+		vga_0_vga_r                         : out   std_logic_vector(3 downto 0)         --                         .r
 	);
 end entity maoin;
 
@@ -31,26 +41,27 @@ architecture rtl of maoin is
 		);
 	end component AV2SEGM3;
 
-	component maoin_btn0 is
+	component VGA is
 		port (
-			clk        : in  std_logic                     := 'X';             -- clk
-			reset_n    : in  std_logic                     := 'X';             -- reset_n
-			address    : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- address
-			write_n    : in  std_logic                     := 'X';             -- write_n
-			writedata  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
-			chipselect : in  std_logic                     := 'X';             -- chipselect
-			readdata   : out std_logic_vector(31 downto 0);                    -- readdata
-			in_port    : in  std_logic                     := 'X';             -- export
-			irq        : out std_logic                                         -- irq
+			clk                    : in  std_logic                     := 'X';             -- clk
+			reset_n                : in  std_logic                     := 'X';             -- reset_n
+			avalon_slave_address   : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- address
+			avalon_slave_writedata : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
+			avalon_slave_write     : in  std_logic                     := 'X';             -- write
+			g                      : out std_logic_vector(3 downto 0);                     -- g
+			b                      : out std_logic_vector(3 downto 0);                     -- b
+			hs                     : out std_logic;                                        -- hsync
+			vs                     : out std_logic;                                        -- vsync
+			r                      : out std_logic_vector(3 downto 0)                      -- r
 		);
-	end component maoin_btn0;
+	end component VGA;
 
 	component maoin_cpu is
 		port (
 			clk                                 : in  std_logic                     := 'X';             -- clk
 			reset_n                             : in  std_logic                     := 'X';             -- reset_n
 			reset_req                           : in  std_logic                     := 'X';             -- reset_req
-			d_address                           : out std_logic_vector(16 downto 0);                    -- address
+			d_address                           : out std_logic_vector(18 downto 0);                    -- address
 			d_byteenable                        : out std_logic_vector(3 downto 0);                     -- byteenable
 			d_read                              : out std_logic;                                        -- read
 			d_readdata                          : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
@@ -58,7 +69,7 @@ architecture rtl of maoin is
 			d_write                             : out std_logic;                                        -- write
 			d_writedata                         : out std_logic_vector(31 downto 0);                    -- writedata
 			debug_mem_slave_debugaccess_to_roms : out std_logic;                                        -- debugaccess
-			i_address                           : out std_logic_vector(16 downto 0);                    -- address
+			i_address                           : out std_logic_vector(18 downto 0);                    -- address
 			i_read                              : out std_logic;                                        -- read
 			i_readdata                          : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
 			i_waitrequest                       : in  std_logic                     := 'X';             -- waitrequest
@@ -72,7 +83,24 @@ architecture rtl of maoin is
 			debug_mem_slave_waitrequest         : out std_logic;                                        -- waitrequest
 			debug_mem_slave_write               : in  std_logic                     := 'X';             -- write
 			debug_mem_slave_writedata           : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
-			dummy_ci_port                       : out std_logic                                         -- readra
+			E_ci_multi_done                     : in  std_logic                     := 'X';             -- done
+			E_ci_multi_clk_en                   : out std_logic;                                        -- clk_en
+			E_ci_multi_start                    : out std_logic;                                        -- start
+			E_ci_result                         : in  std_logic_vector(31 downto 0) := (others => 'X'); -- result
+			D_ci_a                              : out std_logic_vector(4 downto 0);                     -- a
+			D_ci_b                              : out std_logic_vector(4 downto 0);                     -- b
+			D_ci_c                              : out std_logic_vector(4 downto 0);                     -- c
+			D_ci_n                              : out std_logic_vector(7 downto 0);                     -- n
+			D_ci_readra                         : out std_logic;                                        -- readra
+			D_ci_readrb                         : out std_logic;                                        -- readrb
+			D_ci_writerc                        : out std_logic;                                        -- writerc
+			E_ci_dataa                          : out std_logic_vector(31 downto 0);                    -- dataa
+			E_ci_datab                          : out std_logic_vector(31 downto 0);                    -- datab
+			E_ci_multi_clock                    : out std_logic;                                        -- clk
+			E_ci_multi_reset                    : out std_logic;                                        -- reset
+			E_ci_multi_reset_req                : out std_logic;                                        -- reset_req
+			W_ci_estatus                        : out std_logic;                                        -- estatus
+			W_ci_ipending                       : out std_logic_vector(31 downto 0)                     -- ipending
 		);
 	end component maoin_cpu;
 
@@ -91,10 +119,57 @@ architecture rtl of maoin is
 		);
 	end component maoin_jtag_uart_0;
 
+	component fpoint_wrapper is
+		generic (
+			useDivider : integer := 0
+		);
+		port (
+			clk    : in  std_logic                     := 'X';             -- clk
+			clk_en : in  std_logic                     := 'X';             -- clk_en
+			dataa  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- dataa
+			datab  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- datab
+			n      : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- n
+			reset  : in  std_logic                     := 'X';             -- reset
+			start  : in  std_logic                     := 'X';             -- start
+			done   : out std_logic;                                        -- done
+			result : out std_logic_vector(31 downto 0)                     -- result
+		);
+	end component fpoint_wrapper;
+
+	component opencores_i2c is
+		port (
+			wb_clk_i   : in    std_logic                    := 'X';             -- clk
+			wb_rst_i   : in    std_logic                    := 'X';             -- reset
+			scl_pad_io : inout std_logic                    := 'X';             -- export
+			sda_pad_io : inout std_logic                    := 'X';             -- export
+			wb_adr_i   : in    std_logic_vector(2 downto 0) := (others => 'X'); -- address
+			wb_dat_i   : in    std_logic_vector(7 downto 0) := (others => 'X'); -- writedata
+			wb_dat_o   : out   std_logic_vector(7 downto 0);                    -- readdata
+			wb_we_i    : in    std_logic                    := 'X';             -- write
+			wb_stb_i   : in    std_logic                    := 'X';             -- chipselect
+			wb_ack_o   : out   std_logic;                                       -- waitrequest_n
+			wb_inta_o  : out   std_logic                                        -- irq
+		);
+	end component opencores_i2c;
+
+	component maoin_pio_0 is
+		port (
+			clk        : in  std_logic                     := 'X';             -- clk
+			reset_n    : in  std_logic                     := 'X';             -- reset_n
+			address    : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- address
+			write_n    : in  std_logic                     := 'X';             -- write_n
+			writedata  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
+			chipselect : in  std_logic                     := 'X';             -- chipselect
+			readdata   : out std_logic_vector(31 downto 0);                    -- readdata
+			in_port    : in  std_logic                     := 'X';             -- export
+			irq        : out std_logic                                         -- irq
+		);
+	end component maoin_pio_0;
+
 	component maoin_ram is
 		port (
 			clk        : in  std_logic                     := 'X';             -- clk
-			address    : in  std_logic_vector(12 downto 0) := (others => 'X'); -- address
+			address    : in  std_logic_vector(14 downto 0) := (others => 'X'); -- address
 			clken      : in  std_logic                     := 'X';             -- clken
 			chipselect : in  std_logic                     := 'X';             -- chipselect
 			write      : in  std_logic                     := 'X';             -- write
@@ -107,25 +182,163 @@ architecture rtl of maoin is
 		);
 	end component maoin_ram;
 
-	component maoin_timer_0 is
-		port (
-			clk        : in  std_logic                     := 'X';             -- clk
-			reset_n    : in  std_logic                     := 'X';             -- reset_n
-			address    : in  std_logic_vector(2 downto 0)  := (others => 'X'); -- address
-			writedata  : in  std_logic_vector(15 downto 0) := (others => 'X'); -- writedata
-			readdata   : out std_logic_vector(15 downto 0);                    -- readdata
-			chipselect : in  std_logic                     := 'X';             -- chipselect
-			write_n    : in  std_logic                     := 'X';             -- write_n
-			irq        : out std_logic                                         -- irq
+	component altera_customins_master_translator is
+		generic (
+			SHARED_COMB_AND_MULTI : integer := 0
 		);
-	end component maoin_timer_0;
+		port (
+			ci_slave_dataa            : in  std_logic_vector(31 downto 0) := (others => 'X'); -- dataa
+			ci_slave_datab            : in  std_logic_vector(31 downto 0) := (others => 'X'); -- datab
+			ci_slave_result           : out std_logic_vector(31 downto 0);                    -- result
+			ci_slave_n                : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- n
+			ci_slave_readra           : in  std_logic                     := 'X';             -- readra
+			ci_slave_readrb           : in  std_logic                     := 'X';             -- readrb
+			ci_slave_writerc          : in  std_logic                     := 'X';             -- writerc
+			ci_slave_a                : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- a
+			ci_slave_b                : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- b
+			ci_slave_c                : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- c
+			ci_slave_ipending         : in  std_logic_vector(31 downto 0) := (others => 'X'); -- ipending
+			ci_slave_estatus          : in  std_logic                     := 'X';             -- estatus
+			ci_slave_multi_clk        : in  std_logic                     := 'X';             -- clk
+			ci_slave_multi_reset      : in  std_logic                     := 'X';             -- reset
+			ci_slave_multi_clken      : in  std_logic                     := 'X';             -- clk_en
+			ci_slave_multi_reset_req  : in  std_logic                     := 'X';             -- reset_req
+			ci_slave_multi_start      : in  std_logic                     := 'X';             -- start
+			ci_slave_multi_done       : out std_logic;                                        -- done
+			comb_ci_master_dataa      : out std_logic_vector(31 downto 0);                    -- dataa
+			comb_ci_master_datab      : out std_logic_vector(31 downto 0);                    -- datab
+			comb_ci_master_result     : in  std_logic_vector(31 downto 0) := (others => 'X'); -- result
+			comb_ci_master_n          : out std_logic_vector(7 downto 0);                     -- n
+			comb_ci_master_readra     : out std_logic;                                        -- readra
+			comb_ci_master_readrb     : out std_logic;                                        -- readrb
+			comb_ci_master_writerc    : out std_logic;                                        -- writerc
+			comb_ci_master_a          : out std_logic_vector(4 downto 0);                     -- a
+			comb_ci_master_b          : out std_logic_vector(4 downto 0);                     -- b
+			comb_ci_master_c          : out std_logic_vector(4 downto 0);                     -- c
+			comb_ci_master_ipending   : out std_logic_vector(31 downto 0);                    -- ipending
+			comb_ci_master_estatus    : out std_logic;                                        -- estatus
+			multi_ci_master_clk       : out std_logic;                                        -- clk
+			multi_ci_master_reset     : out std_logic;                                        -- reset
+			multi_ci_master_clken     : out std_logic;                                        -- clk_en
+			multi_ci_master_reset_req : out std_logic;                                        -- reset_req
+			multi_ci_master_start     : out std_logic;                                        -- start
+			multi_ci_master_done      : in  std_logic                     := 'X';             -- done
+			multi_ci_master_dataa     : out std_logic_vector(31 downto 0);                    -- dataa
+			multi_ci_master_datab     : out std_logic_vector(31 downto 0);                    -- datab
+			multi_ci_master_result    : in  std_logic_vector(31 downto 0) := (others => 'X'); -- result
+			multi_ci_master_n         : out std_logic_vector(7 downto 0);                     -- n
+			multi_ci_master_readra    : out std_logic;                                        -- readra
+			multi_ci_master_readrb    : out std_logic;                                        -- readrb
+			multi_ci_master_writerc   : out std_logic;                                        -- writerc
+			multi_ci_master_a         : out std_logic_vector(4 downto 0);                     -- a
+			multi_ci_master_b         : out std_logic_vector(4 downto 0);                     -- b
+			multi_ci_master_c         : out std_logic_vector(4 downto 0);                     -- c
+			ci_slave_multi_dataa      : in  std_logic_vector(31 downto 0) := (others => 'X'); -- multi_dataa
+			ci_slave_multi_datab      : in  std_logic_vector(31 downto 0) := (others => 'X'); -- multi_datab
+			ci_slave_multi_result     : out std_logic_vector(31 downto 0);                    -- multi_result
+			ci_slave_multi_n          : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- multi_n
+			ci_slave_multi_readra     : in  std_logic                     := 'X';             -- multi_readra
+			ci_slave_multi_readrb     : in  std_logic                     := 'X';             -- multi_readrb
+			ci_slave_multi_writerc    : in  std_logic                     := 'X';             -- multi_writerc
+			ci_slave_multi_a          : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- multi_a
+			ci_slave_multi_b          : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- multi_b
+			ci_slave_multi_c          : in  std_logic_vector(4 downto 0)  := (others => 'X')  -- multi_c
+		);
+	end component altera_customins_master_translator;
+
+	component maoin_cpu_custom_instruction_master_multi_xconnect is
+		port (
+			ci_slave_dataa       : in  std_logic_vector(31 downto 0) := (others => 'X'); -- dataa
+			ci_slave_datab       : in  std_logic_vector(31 downto 0) := (others => 'X'); -- datab
+			ci_slave_result      : out std_logic_vector(31 downto 0);                    -- result
+			ci_slave_n           : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- n
+			ci_slave_readra      : in  std_logic                     := 'X';             -- readra
+			ci_slave_readrb      : in  std_logic                     := 'X';             -- readrb
+			ci_slave_writerc     : in  std_logic                     := 'X';             -- writerc
+			ci_slave_a           : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- a
+			ci_slave_b           : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- b
+			ci_slave_c           : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- c
+			ci_slave_ipending    : in  std_logic_vector(31 downto 0) := (others => 'X'); -- ipending
+			ci_slave_estatus     : in  std_logic                     := 'X';             -- estatus
+			ci_slave_clk         : in  std_logic                     := 'X';             -- clk
+			ci_slave_reset       : in  std_logic                     := 'X';             -- reset
+			ci_slave_clken       : in  std_logic                     := 'X';             -- clk_en
+			ci_slave_reset_req   : in  std_logic                     := 'X';             -- reset_req
+			ci_slave_start       : in  std_logic                     := 'X';             -- start
+			ci_slave_done        : out std_logic;                                        -- done
+			ci_master0_dataa     : out std_logic_vector(31 downto 0);                    -- dataa
+			ci_master0_datab     : out std_logic_vector(31 downto 0);                    -- datab
+			ci_master0_result    : in  std_logic_vector(31 downto 0) := (others => 'X'); -- result
+			ci_master0_n         : out std_logic_vector(7 downto 0);                     -- n
+			ci_master0_readra    : out std_logic;                                        -- readra
+			ci_master0_readrb    : out std_logic;                                        -- readrb
+			ci_master0_writerc   : out std_logic;                                        -- writerc
+			ci_master0_a         : out std_logic_vector(4 downto 0);                     -- a
+			ci_master0_b         : out std_logic_vector(4 downto 0);                     -- b
+			ci_master0_c         : out std_logic_vector(4 downto 0);                     -- c
+			ci_master0_ipending  : out std_logic_vector(31 downto 0);                    -- ipending
+			ci_master0_estatus   : out std_logic;                                        -- estatus
+			ci_master0_clk       : out std_logic;                                        -- clk
+			ci_master0_reset     : out std_logic;                                        -- reset
+			ci_master0_clken     : out std_logic;                                        -- clk_en
+			ci_master0_reset_req : out std_logic;                                        -- reset_req
+			ci_master0_start     : out std_logic;                                        -- start
+			ci_master0_done      : in  std_logic                     := 'X'              -- done
+		);
+	end component maoin_cpu_custom_instruction_master_multi_xconnect;
+
+	component altera_customins_slave_translator is
+		generic (
+			N_WIDTH          : integer := 8;
+			USE_DONE         : integer := 1;
+			NUM_FIXED_CYCLES : integer := 2
+		);
+		port (
+			ci_slave_dataa      : in  std_logic_vector(31 downto 0) := (others => 'X'); -- dataa
+			ci_slave_datab      : in  std_logic_vector(31 downto 0) := (others => 'X'); -- datab
+			ci_slave_result     : out std_logic_vector(31 downto 0);                    -- result
+			ci_slave_n          : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- n
+			ci_slave_readra     : in  std_logic                     := 'X';             -- readra
+			ci_slave_readrb     : in  std_logic                     := 'X';             -- readrb
+			ci_slave_writerc    : in  std_logic                     := 'X';             -- writerc
+			ci_slave_a          : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- a
+			ci_slave_b          : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- b
+			ci_slave_c          : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- c
+			ci_slave_ipending   : in  std_logic_vector(31 downto 0) := (others => 'X'); -- ipending
+			ci_slave_estatus    : in  std_logic                     := 'X';             -- estatus
+			ci_slave_clk        : in  std_logic                     := 'X';             -- clk
+			ci_slave_clken      : in  std_logic                     := 'X';             -- clk_en
+			ci_slave_reset_req  : in  std_logic                     := 'X';             -- reset_req
+			ci_slave_reset      : in  std_logic                     := 'X';             -- reset
+			ci_slave_start      : in  std_logic                     := 'X';             -- start
+			ci_slave_done       : out std_logic;                                        -- done
+			ci_master_dataa     : out std_logic_vector(31 downto 0);                    -- dataa
+			ci_master_datab     : out std_logic_vector(31 downto 0);                    -- datab
+			ci_master_result    : in  std_logic_vector(31 downto 0) := (others => 'X'); -- result
+			ci_master_n         : out std_logic_vector(1 downto 0);                     -- n
+			ci_master_clk       : out std_logic;                                        -- clk
+			ci_master_clken     : out std_logic;                                        -- clk_en
+			ci_master_reset     : out std_logic;                                        -- reset
+			ci_master_start     : out std_logic;                                        -- start
+			ci_master_done      : in  std_logic                     := 'X';             -- done
+			ci_master_readra    : out std_logic;                                        -- readra
+			ci_master_readrb    : out std_logic;                                        -- readrb
+			ci_master_writerc   : out std_logic;                                        -- writerc
+			ci_master_a         : out std_logic_vector(4 downto 0);                     -- a
+			ci_master_b         : out std_logic_vector(4 downto 0);                     -- b
+			ci_master_c         : out std_logic_vector(4 downto 0);                     -- c
+			ci_master_ipending  : out std_logic_vector(31 downto 0);                    -- ipending
+			ci_master_estatus   : out std_logic;                                        -- estatus
+			ci_master_reset_req : out std_logic                                         -- reset_req
+		);
+	end component altera_customins_slave_translator;
 
 	component maoin_mm_interconnect_0 is
 		port (
 			clk_clk_clk                                       : in  std_logic                     := 'X';             -- clk
 			AV2SEGM3_0_reset_sink_reset_bridge_in_reset_reset : in  std_logic                     := 'X';             -- reset
 			cpu_reset_reset_bridge_in_reset_reset             : in  std_logic                     := 'X';             -- reset
-			cpu_data_master_address                           : in  std_logic_vector(16 downto 0) := (others => 'X'); -- address
+			cpu_data_master_address                           : in  std_logic_vector(18 downto 0) := (others => 'X'); -- address
 			cpu_data_master_waitrequest                       : out std_logic;                                        -- waitrequest
 			cpu_data_master_byteenable                        : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- byteenable
 			cpu_data_master_read                              : in  std_logic                     := 'X';             -- read
@@ -133,18 +346,16 @@ architecture rtl of maoin is
 			cpu_data_master_write                             : in  std_logic                     := 'X';             -- write
 			cpu_data_master_writedata                         : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
 			cpu_data_master_debugaccess                       : in  std_logic                     := 'X';             -- debugaccess
-			cpu_instruction_master_address                    : in  std_logic_vector(16 downto 0) := (others => 'X'); -- address
+			cpu_instruction_master_address                    : in  std_logic_vector(18 downto 0) := (others => 'X'); -- address
 			cpu_instruction_master_waitrequest                : out std_logic;                                        -- waitrequest
 			cpu_instruction_master_read                       : in  std_logic                     := 'X';             -- read
 			cpu_instruction_master_readdata                   : out std_logic_vector(31 downto 0);                    -- readdata
 			AV2SEGM3_0_avalon_slave_address                   : out std_logic_vector(1 downto 0);                     -- address
 			AV2SEGM3_0_avalon_slave_write                     : out std_logic;                                        -- write
 			AV2SEGM3_0_avalon_slave_writedata                 : out std_logic_vector(7 downto 0);                     -- writedata
-			btn0_s1_address                                   : out std_logic_vector(1 downto 0);                     -- address
-			btn0_s1_write                                     : out std_logic;                                        -- write
-			btn0_s1_readdata                                  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
-			btn0_s1_writedata                                 : out std_logic_vector(31 downto 0);                    -- writedata
-			btn0_s1_chipselect                                : out std_logic;                                        -- chipselect
+			AV2SEGM3_1_avalon_slave_address                   : out std_logic_vector(1 downto 0);                     -- address
+			AV2SEGM3_1_avalon_slave_write                     : out std_logic;                                        -- write
+			AV2SEGM3_1_avalon_slave_writedata                 : out std_logic_vector(7 downto 0);                     -- writedata
 			cpu_debug_mem_slave_address                       : out std_logic_vector(8 downto 0);                     -- address
 			cpu_debug_mem_slave_write                         : out std_logic;                                        -- write
 			cpu_debug_mem_slave_read                          : out std_logic;                                        -- read
@@ -160,18 +371,27 @@ architecture rtl of maoin is
 			jtag_uart_0_avalon_jtag_slave_writedata           : out std_logic_vector(31 downto 0);                    -- writedata
 			jtag_uart_0_avalon_jtag_slave_waitrequest         : in  std_logic                     := 'X';             -- waitrequest
 			jtag_uart_0_avalon_jtag_slave_chipselect          : out std_logic;                                        -- chipselect
-			ram_s1_address                                    : out std_logic_vector(12 downto 0);                    -- address
+			opencores_i2c_0_avalon_slave_0_address            : out std_logic_vector(2 downto 0);                     -- address
+			opencores_i2c_0_avalon_slave_0_write              : out std_logic;                                        -- write
+			opencores_i2c_0_avalon_slave_0_readdata           : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- readdata
+			opencores_i2c_0_avalon_slave_0_writedata          : out std_logic_vector(7 downto 0);                     -- writedata
+			opencores_i2c_0_avalon_slave_0_waitrequest        : in  std_logic                     := 'X';             -- waitrequest
+			opencores_i2c_0_avalon_slave_0_chipselect         : out std_logic;                                        -- chipselect
+			pio_0_s1_address                                  : out std_logic_vector(1 downto 0);                     -- address
+			pio_0_s1_write                                    : out std_logic;                                        -- write
+			pio_0_s1_readdata                                 : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
+			pio_0_s1_writedata                                : out std_logic_vector(31 downto 0);                    -- writedata
+			pio_0_s1_chipselect                               : out std_logic;                                        -- chipselect
+			ram_s1_address                                    : out std_logic_vector(14 downto 0);                    -- address
 			ram_s1_write                                      : out std_logic;                                        -- write
 			ram_s1_readdata                                   : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
 			ram_s1_writedata                                  : out std_logic_vector(31 downto 0);                    -- writedata
 			ram_s1_byteenable                                 : out std_logic_vector(3 downto 0);                     -- byteenable
 			ram_s1_chipselect                                 : out std_logic;                                        -- chipselect
 			ram_s1_clken                                      : out std_logic;                                        -- clken
-			timer_0_s1_address                                : out std_logic_vector(2 downto 0);                     -- address
-			timer_0_s1_write                                  : out std_logic;                                        -- write
-			timer_0_s1_readdata                               : in  std_logic_vector(15 downto 0) := (others => 'X'); -- readdata
-			timer_0_s1_writedata                              : out std_logic_vector(15 downto 0);                    -- writedata
-			timer_0_s1_chipselect                             : out std_logic                                         -- chipselect
+			VGA_0_avalon_slave_address                        : out std_logic_vector(1 downto 0);                     -- address
+			VGA_0_avalon_slave_write                          : out std_logic;                                        -- write
+			VGA_0_avalon_slave_writedata                      : out std_logic_vector(31 downto 0)                     -- writedata
 		);
 	end component maoin_mm_interconnect_0;
 
@@ -318,68 +538,136 @@ architecture rtl of maoin is
 		);
 	end component maoin_rst_controller_001;
 
-	signal cpu_data_master_readdata                                        : std_logic_vector(31 downto 0); -- mm_interconnect_0:cpu_data_master_readdata -> cpu:d_readdata
-	signal cpu_data_master_waitrequest                                     : std_logic;                     -- mm_interconnect_0:cpu_data_master_waitrequest -> cpu:d_waitrequest
-	signal cpu_data_master_debugaccess                                     : std_logic;                     -- cpu:debug_mem_slave_debugaccess_to_roms -> mm_interconnect_0:cpu_data_master_debugaccess
-	signal cpu_data_master_address                                         : std_logic_vector(16 downto 0); -- cpu:d_address -> mm_interconnect_0:cpu_data_master_address
-	signal cpu_data_master_byteenable                                      : std_logic_vector(3 downto 0);  -- cpu:d_byteenable -> mm_interconnect_0:cpu_data_master_byteenable
-	signal cpu_data_master_read                                            : std_logic;                     -- cpu:d_read -> mm_interconnect_0:cpu_data_master_read
-	signal cpu_data_master_write                                           : std_logic;                     -- cpu:d_write -> mm_interconnect_0:cpu_data_master_write
-	signal cpu_data_master_writedata                                       : std_logic_vector(31 downto 0); -- cpu:d_writedata -> mm_interconnect_0:cpu_data_master_writedata
-	signal cpu_instruction_master_readdata                                 : std_logic_vector(31 downto 0); -- mm_interconnect_0:cpu_instruction_master_readdata -> cpu:i_readdata
-	signal cpu_instruction_master_waitrequest                              : std_logic;                     -- mm_interconnect_0:cpu_instruction_master_waitrequest -> cpu:i_waitrequest
-	signal cpu_instruction_master_address                                  : std_logic_vector(16 downto 0); -- cpu:i_address -> mm_interconnect_0:cpu_instruction_master_address
-	signal cpu_instruction_master_read                                     : std_logic;                     -- cpu:i_read -> mm_interconnect_0:cpu_instruction_master_read
-	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_chipselect      : std_logic;                     -- mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_chipselect -> jtag_uart_0:av_chipselect
-	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_readdata        : std_logic_vector(31 downto 0); -- jtag_uart_0:av_readdata -> mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_readdata
-	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_waitrequest     : std_logic;                     -- jtag_uart_0:av_waitrequest -> mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_waitrequest
-	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_address         : std_logic_vector(0 downto 0);  -- mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_address -> jtag_uart_0:av_address
-	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_read            : std_logic;                     -- mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_read -> mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_read:in
-	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write           : std_logic;                     -- mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_write -> mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write:in
-	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_writedata       : std_logic_vector(31 downto 0); -- mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_writedata -> jtag_uart_0:av_writedata
-	signal mm_interconnect_0_av2segm3_0_avalon_slave_address               : std_logic_vector(1 downto 0);  -- mm_interconnect_0:AV2SEGM3_0_avalon_slave_address -> AV2SEGM3_0:avalon_slave_address
-	signal mm_interconnect_0_av2segm3_0_avalon_slave_write                 : std_logic;                     -- mm_interconnect_0:AV2SEGM3_0_avalon_slave_write -> AV2SEGM3_0:avalon_slave_write
-	signal mm_interconnect_0_av2segm3_0_avalon_slave_writedata             : std_logic_vector(7 downto 0);  -- mm_interconnect_0:AV2SEGM3_0_avalon_slave_writedata -> AV2SEGM3_0:avalon_slave_writedata
-	signal mm_interconnect_0_cpu_debug_mem_slave_readdata                  : std_logic_vector(31 downto 0); -- cpu:debug_mem_slave_readdata -> mm_interconnect_0:cpu_debug_mem_slave_readdata
-	signal mm_interconnect_0_cpu_debug_mem_slave_waitrequest               : std_logic;                     -- cpu:debug_mem_slave_waitrequest -> mm_interconnect_0:cpu_debug_mem_slave_waitrequest
-	signal mm_interconnect_0_cpu_debug_mem_slave_debugaccess               : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_debugaccess -> cpu:debug_mem_slave_debugaccess
-	signal mm_interconnect_0_cpu_debug_mem_slave_address                   : std_logic_vector(8 downto 0);  -- mm_interconnect_0:cpu_debug_mem_slave_address -> cpu:debug_mem_slave_address
-	signal mm_interconnect_0_cpu_debug_mem_slave_read                      : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_read -> cpu:debug_mem_slave_read
-	signal mm_interconnect_0_cpu_debug_mem_slave_byteenable                : std_logic_vector(3 downto 0);  -- mm_interconnect_0:cpu_debug_mem_slave_byteenable -> cpu:debug_mem_slave_byteenable
-	signal mm_interconnect_0_cpu_debug_mem_slave_write                     : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_write -> cpu:debug_mem_slave_write
-	signal mm_interconnect_0_cpu_debug_mem_slave_writedata                 : std_logic_vector(31 downto 0); -- mm_interconnect_0:cpu_debug_mem_slave_writedata -> cpu:debug_mem_slave_writedata
-	signal mm_interconnect_0_ram_s1_chipselect                             : std_logic;                     -- mm_interconnect_0:ram_s1_chipselect -> ram:chipselect
-	signal mm_interconnect_0_ram_s1_readdata                               : std_logic_vector(31 downto 0); -- ram:readdata -> mm_interconnect_0:ram_s1_readdata
-	signal mm_interconnect_0_ram_s1_address                                : std_logic_vector(12 downto 0); -- mm_interconnect_0:ram_s1_address -> ram:address
-	signal mm_interconnect_0_ram_s1_byteenable                             : std_logic_vector(3 downto 0);  -- mm_interconnect_0:ram_s1_byteenable -> ram:byteenable
-	signal mm_interconnect_0_ram_s1_write                                  : std_logic;                     -- mm_interconnect_0:ram_s1_write -> ram:write
-	signal mm_interconnect_0_ram_s1_writedata                              : std_logic_vector(31 downto 0); -- mm_interconnect_0:ram_s1_writedata -> ram:writedata
-	signal mm_interconnect_0_ram_s1_clken                                  : std_logic;                     -- mm_interconnect_0:ram_s1_clken -> ram:clken
-	signal mm_interconnect_0_btn0_s1_chipselect                            : std_logic;                     -- mm_interconnect_0:btn0_s1_chipselect -> btn0:chipselect
-	signal mm_interconnect_0_btn0_s1_readdata                              : std_logic_vector(31 downto 0); -- btn0:readdata -> mm_interconnect_0:btn0_s1_readdata
-	signal mm_interconnect_0_btn0_s1_address                               : std_logic_vector(1 downto 0);  -- mm_interconnect_0:btn0_s1_address -> btn0:address
-	signal mm_interconnect_0_btn0_s1_write                                 : std_logic;                     -- mm_interconnect_0:btn0_s1_write -> mm_interconnect_0_btn0_s1_write:in
-	signal mm_interconnect_0_btn0_s1_writedata                             : std_logic_vector(31 downto 0); -- mm_interconnect_0:btn0_s1_writedata -> btn0:writedata
-	signal mm_interconnect_0_timer_0_s1_chipselect                         : std_logic;                     -- mm_interconnect_0:timer_0_s1_chipselect -> timer_0:chipselect
-	signal mm_interconnect_0_timer_0_s1_readdata                           : std_logic_vector(15 downto 0); -- timer_0:readdata -> mm_interconnect_0:timer_0_s1_readdata
-	signal mm_interconnect_0_timer_0_s1_address                            : std_logic_vector(2 downto 0);  -- mm_interconnect_0:timer_0_s1_address -> timer_0:address
-	signal mm_interconnect_0_timer_0_s1_write                              : std_logic;                     -- mm_interconnect_0:timer_0_s1_write -> mm_interconnect_0_timer_0_s1_write:in
-	signal mm_interconnect_0_timer_0_s1_writedata                          : std_logic_vector(15 downto 0); -- mm_interconnect_0:timer_0_s1_writedata -> timer_0:writedata
-	signal irq_mapper_receiver0_irq                                        : std_logic;                     -- jtag_uart_0:av_irq -> irq_mapper:receiver0_irq
-	signal irq_mapper_receiver1_irq                                        : std_logic;                     -- btn0:irq -> irq_mapper:receiver1_irq
-	signal irq_mapper_receiver2_irq                                        : std_logic;                     -- timer_0:irq -> irq_mapper:receiver2_irq
-	signal cpu_irq_irq                                                     : std_logic_vector(31 downto 0); -- irq_mapper:sender_irq -> cpu:irq
-	signal rst_controller_reset_out_reset                                  : std_logic;                     -- rst_controller:reset_out -> [mm_interconnect_0:AV2SEGM3_0_reset_sink_reset_bridge_in_reset_reset, rst_controller_reset_out_reset:in]
-	signal rst_controller_001_reset_out_reset                              : std_logic;                     -- rst_controller_001:reset_out -> [irq_mapper:reset, mm_interconnect_0:cpu_reset_reset_bridge_in_reset_reset, ram:reset, rst_controller_001_reset_out_reset:in, rst_translator:in_reset]
-	signal rst_controller_001_reset_out_reset_req                          : std_logic;                     -- rst_controller_001:reset_req -> [cpu:reset_req, ram:reset_req, rst_translator:reset_req_in]
-	signal cpu_debug_reset_request_reset                                   : std_logic;                     -- cpu:debug_reset_request -> rst_controller_001:reset_in1
-	signal reset_reset_n_ports_inv                                         : std_logic;                     -- reset_reset_n:inv -> [rst_controller:reset_in0, rst_controller_001:reset_in0]
-	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_read_ports_inv  : std_logic;                     -- mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_read:inv -> jtag_uart_0:av_read_n
-	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write_ports_inv : std_logic;                     -- mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write:inv -> jtag_uart_0:av_write_n
-	signal mm_interconnect_0_btn0_s1_write_ports_inv                       : std_logic;                     -- mm_interconnect_0_btn0_s1_write:inv -> btn0:write_n
-	signal mm_interconnect_0_timer_0_s1_write_ports_inv                    : std_logic;                     -- mm_interconnect_0_timer_0_s1_write:inv -> timer_0:write_n
-	signal rst_controller_reset_out_reset_ports_inv                        : std_logic;                     -- rst_controller_reset_out_reset:inv -> [AV2SEGM3_0:reset_sink_reset, timer_0:reset_n]
-	signal rst_controller_001_reset_out_reset_ports_inv                    : std_logic;                     -- rst_controller_001_reset_out_reset:inv -> [btn0:reset_n, cpu:reset_n, jtag_uart_0:rst_n]
+	signal cpu_custom_instruction_master_readra                                   : std_logic;                     -- cpu:D_ci_readra -> cpu_custom_instruction_master_translator:ci_slave_readra
+	signal cpu_custom_instruction_master_a                                        : std_logic_vector(4 downto 0);  -- cpu:D_ci_a -> cpu_custom_instruction_master_translator:ci_slave_a
+	signal cpu_custom_instruction_master_b                                        : std_logic_vector(4 downto 0);  -- cpu:D_ci_b -> cpu_custom_instruction_master_translator:ci_slave_b
+	signal cpu_custom_instruction_master_c                                        : std_logic_vector(4 downto 0);  -- cpu:D_ci_c -> cpu_custom_instruction_master_translator:ci_slave_c
+	signal cpu_custom_instruction_master_readrb                                   : std_logic;                     -- cpu:D_ci_readrb -> cpu_custom_instruction_master_translator:ci_slave_readrb
+	signal cpu_custom_instruction_master_clk                                      : std_logic;                     -- cpu:E_ci_multi_clock -> cpu_custom_instruction_master_translator:ci_slave_multi_clk
+	signal cpu_custom_instruction_master_ipending                                 : std_logic_vector(31 downto 0); -- cpu:W_ci_ipending -> cpu_custom_instruction_master_translator:ci_slave_ipending
+	signal cpu_custom_instruction_master_start                                    : std_logic;                     -- cpu:E_ci_multi_start -> cpu_custom_instruction_master_translator:ci_slave_multi_start
+	signal cpu_custom_instruction_master_reset_req                                : std_logic;                     -- cpu:E_ci_multi_reset_req -> cpu_custom_instruction_master_translator:ci_slave_multi_reset_req
+	signal cpu_custom_instruction_master_done                                     : std_logic;                     -- cpu_custom_instruction_master_translator:ci_slave_multi_done -> cpu:E_ci_multi_done
+	signal cpu_custom_instruction_master_n                                        : std_logic_vector(7 downto 0);  -- cpu:D_ci_n -> cpu_custom_instruction_master_translator:ci_slave_n
+	signal cpu_custom_instruction_master_result                                   : std_logic_vector(31 downto 0); -- cpu_custom_instruction_master_translator:ci_slave_result -> cpu:E_ci_result
+	signal cpu_custom_instruction_master_estatus                                  : std_logic;                     -- cpu:W_ci_estatus -> cpu_custom_instruction_master_translator:ci_slave_estatus
+	signal cpu_custom_instruction_master_clk_en                                   : std_logic;                     -- cpu:E_ci_multi_clk_en -> cpu_custom_instruction_master_translator:ci_slave_multi_clken
+	signal cpu_custom_instruction_master_datab                                    : std_logic_vector(31 downto 0); -- cpu:E_ci_datab -> cpu_custom_instruction_master_translator:ci_slave_datab
+	signal cpu_custom_instruction_master_dataa                                    : std_logic_vector(31 downto 0); -- cpu:E_ci_dataa -> cpu_custom_instruction_master_translator:ci_slave_dataa
+	signal cpu_custom_instruction_master_reset                                    : std_logic;                     -- cpu:E_ci_multi_reset -> cpu_custom_instruction_master_translator:ci_slave_multi_reset
+	signal cpu_custom_instruction_master_writerc                                  : std_logic;                     -- cpu:D_ci_writerc -> cpu_custom_instruction_master_translator:ci_slave_writerc
+	signal cpu_custom_instruction_master_translator_multi_ci_master_readra        : std_logic;                     -- cpu_custom_instruction_master_translator:multi_ci_master_readra -> cpu_custom_instruction_master_multi_xconnect:ci_slave_readra
+	signal cpu_custom_instruction_master_translator_multi_ci_master_a             : std_logic_vector(4 downto 0);  -- cpu_custom_instruction_master_translator:multi_ci_master_a -> cpu_custom_instruction_master_multi_xconnect:ci_slave_a
+	signal cpu_custom_instruction_master_translator_multi_ci_master_b             : std_logic_vector(4 downto 0);  -- cpu_custom_instruction_master_translator:multi_ci_master_b -> cpu_custom_instruction_master_multi_xconnect:ci_slave_b
+	signal cpu_custom_instruction_master_translator_multi_ci_master_clk           : std_logic;                     -- cpu_custom_instruction_master_translator:multi_ci_master_clk -> cpu_custom_instruction_master_multi_xconnect:ci_slave_clk
+	signal cpu_custom_instruction_master_translator_multi_ci_master_readrb        : std_logic;                     -- cpu_custom_instruction_master_translator:multi_ci_master_readrb -> cpu_custom_instruction_master_multi_xconnect:ci_slave_readrb
+	signal cpu_custom_instruction_master_translator_multi_ci_master_c             : std_logic_vector(4 downto 0);  -- cpu_custom_instruction_master_translator:multi_ci_master_c -> cpu_custom_instruction_master_multi_xconnect:ci_slave_c
+	signal cpu_custom_instruction_master_translator_multi_ci_master_start         : std_logic;                     -- cpu_custom_instruction_master_translator:multi_ci_master_start -> cpu_custom_instruction_master_multi_xconnect:ci_slave_start
+	signal cpu_custom_instruction_master_translator_multi_ci_master_reset_req     : std_logic;                     -- cpu_custom_instruction_master_translator:multi_ci_master_reset_req -> cpu_custom_instruction_master_multi_xconnect:ci_slave_reset_req
+	signal cpu_custom_instruction_master_translator_multi_ci_master_done          : std_logic;                     -- cpu_custom_instruction_master_multi_xconnect:ci_slave_done -> cpu_custom_instruction_master_translator:multi_ci_master_done
+	signal cpu_custom_instruction_master_translator_multi_ci_master_n             : std_logic_vector(7 downto 0);  -- cpu_custom_instruction_master_translator:multi_ci_master_n -> cpu_custom_instruction_master_multi_xconnect:ci_slave_n
+	signal cpu_custom_instruction_master_translator_multi_ci_master_result        : std_logic_vector(31 downto 0); -- cpu_custom_instruction_master_multi_xconnect:ci_slave_result -> cpu_custom_instruction_master_translator:multi_ci_master_result
+	signal cpu_custom_instruction_master_translator_multi_ci_master_clk_en        : std_logic;                     -- cpu_custom_instruction_master_translator:multi_ci_master_clken -> cpu_custom_instruction_master_multi_xconnect:ci_slave_clken
+	signal cpu_custom_instruction_master_translator_multi_ci_master_datab         : std_logic_vector(31 downto 0); -- cpu_custom_instruction_master_translator:multi_ci_master_datab -> cpu_custom_instruction_master_multi_xconnect:ci_slave_datab
+	signal cpu_custom_instruction_master_translator_multi_ci_master_dataa         : std_logic_vector(31 downto 0); -- cpu_custom_instruction_master_translator:multi_ci_master_dataa -> cpu_custom_instruction_master_multi_xconnect:ci_slave_dataa
+	signal cpu_custom_instruction_master_translator_multi_ci_master_reset         : std_logic;                     -- cpu_custom_instruction_master_translator:multi_ci_master_reset -> cpu_custom_instruction_master_multi_xconnect:ci_slave_reset
+	signal cpu_custom_instruction_master_translator_multi_ci_master_writerc       : std_logic;                     -- cpu_custom_instruction_master_translator:multi_ci_master_writerc -> cpu_custom_instruction_master_multi_xconnect:ci_slave_writerc
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_readra         : std_logic;                     -- cpu_custom_instruction_master_multi_xconnect:ci_master0_readra -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_readra
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_a              : std_logic_vector(4 downto 0);  -- cpu_custom_instruction_master_multi_xconnect:ci_master0_a -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_a
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_b              : std_logic_vector(4 downto 0);  -- cpu_custom_instruction_master_multi_xconnect:ci_master0_b -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_b
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_readrb         : std_logic;                     -- cpu_custom_instruction_master_multi_xconnect:ci_master0_readrb -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_readrb
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_c              : std_logic_vector(4 downto 0);  -- cpu_custom_instruction_master_multi_xconnect:ci_master0_c -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_c
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_clk            : std_logic;                     -- cpu_custom_instruction_master_multi_xconnect:ci_master0_clk -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_clk
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_ipending       : std_logic_vector(31 downto 0); -- cpu_custom_instruction_master_multi_xconnect:ci_master0_ipending -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_ipending
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_start          : std_logic;                     -- cpu_custom_instruction_master_multi_xconnect:ci_master0_start -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_start
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_reset_req      : std_logic;                     -- cpu_custom_instruction_master_multi_xconnect:ci_master0_reset_req -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_reset_req
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_done           : std_logic;                     -- cpu_custom_instruction_master_multi_slave_translator0:ci_slave_done -> cpu_custom_instruction_master_multi_xconnect:ci_master0_done
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_n              : std_logic_vector(7 downto 0);  -- cpu_custom_instruction_master_multi_xconnect:ci_master0_n -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_n
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_result         : std_logic_vector(31 downto 0); -- cpu_custom_instruction_master_multi_slave_translator0:ci_slave_result -> cpu_custom_instruction_master_multi_xconnect:ci_master0_result
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_estatus        : std_logic;                     -- cpu_custom_instruction_master_multi_xconnect:ci_master0_estatus -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_estatus
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_clk_en         : std_logic;                     -- cpu_custom_instruction_master_multi_xconnect:ci_master0_clken -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_clken
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_datab          : std_logic_vector(31 downto 0); -- cpu_custom_instruction_master_multi_xconnect:ci_master0_datab -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_datab
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_dataa          : std_logic_vector(31 downto 0); -- cpu_custom_instruction_master_multi_xconnect:ci_master0_dataa -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_dataa
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_reset          : std_logic;                     -- cpu_custom_instruction_master_multi_xconnect:ci_master0_reset -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_reset
+	signal cpu_custom_instruction_master_multi_xconnect_ci_master0_writerc        : std_logic;                     -- cpu_custom_instruction_master_multi_xconnect:ci_master0_writerc -> cpu_custom_instruction_master_multi_slave_translator0:ci_slave_writerc
+	signal cpu_custom_instruction_master_multi_slave_translator0_ci_master_result : std_logic_vector(31 downto 0); -- nios_custom_instr_floating_point_0:result -> cpu_custom_instruction_master_multi_slave_translator0:ci_master_result
+	signal cpu_custom_instruction_master_multi_slave_translator0_ci_master_clk    : std_logic;                     -- cpu_custom_instruction_master_multi_slave_translator0:ci_master_clk -> nios_custom_instr_floating_point_0:clk
+	signal cpu_custom_instruction_master_multi_slave_translator0_ci_master_clk_en : std_logic;                     -- cpu_custom_instruction_master_multi_slave_translator0:ci_master_clken -> nios_custom_instr_floating_point_0:clk_en
+	signal cpu_custom_instruction_master_multi_slave_translator0_ci_master_datab  : std_logic_vector(31 downto 0); -- cpu_custom_instruction_master_multi_slave_translator0:ci_master_datab -> nios_custom_instr_floating_point_0:datab
+	signal cpu_custom_instruction_master_multi_slave_translator0_ci_master_dataa  : std_logic_vector(31 downto 0); -- cpu_custom_instruction_master_multi_slave_translator0:ci_master_dataa -> nios_custom_instr_floating_point_0:dataa
+	signal cpu_custom_instruction_master_multi_slave_translator0_ci_master_start  : std_logic;                     -- cpu_custom_instruction_master_multi_slave_translator0:ci_master_start -> nios_custom_instr_floating_point_0:start
+	signal cpu_custom_instruction_master_multi_slave_translator0_ci_master_reset  : std_logic;                     -- cpu_custom_instruction_master_multi_slave_translator0:ci_master_reset -> nios_custom_instr_floating_point_0:reset
+	signal cpu_custom_instruction_master_multi_slave_translator0_ci_master_done   : std_logic;                     -- nios_custom_instr_floating_point_0:done -> cpu_custom_instruction_master_multi_slave_translator0:ci_master_done
+	signal cpu_custom_instruction_master_multi_slave_translator0_ci_master_n      : std_logic_vector(1 downto 0);  -- cpu_custom_instruction_master_multi_slave_translator0:ci_master_n -> nios_custom_instr_floating_point_0:n
+	signal cpu_data_master_readdata                                               : std_logic_vector(31 downto 0); -- mm_interconnect_0:cpu_data_master_readdata -> cpu:d_readdata
+	signal cpu_data_master_waitrequest                                            : std_logic;                     -- mm_interconnect_0:cpu_data_master_waitrequest -> cpu:d_waitrequest
+	signal cpu_data_master_debugaccess                                            : std_logic;                     -- cpu:debug_mem_slave_debugaccess_to_roms -> mm_interconnect_0:cpu_data_master_debugaccess
+	signal cpu_data_master_address                                                : std_logic_vector(18 downto 0); -- cpu:d_address -> mm_interconnect_0:cpu_data_master_address
+	signal cpu_data_master_byteenable                                             : std_logic_vector(3 downto 0);  -- cpu:d_byteenable -> mm_interconnect_0:cpu_data_master_byteenable
+	signal cpu_data_master_read                                                   : std_logic;                     -- cpu:d_read -> mm_interconnect_0:cpu_data_master_read
+	signal cpu_data_master_write                                                  : std_logic;                     -- cpu:d_write -> mm_interconnect_0:cpu_data_master_write
+	signal cpu_data_master_writedata                                              : std_logic_vector(31 downto 0); -- cpu:d_writedata -> mm_interconnect_0:cpu_data_master_writedata
+	signal cpu_instruction_master_readdata                                        : std_logic_vector(31 downto 0); -- mm_interconnect_0:cpu_instruction_master_readdata -> cpu:i_readdata
+	signal cpu_instruction_master_waitrequest                                     : std_logic;                     -- mm_interconnect_0:cpu_instruction_master_waitrequest -> cpu:i_waitrequest
+	signal cpu_instruction_master_address                                         : std_logic_vector(18 downto 0); -- cpu:i_address -> mm_interconnect_0:cpu_instruction_master_address
+	signal cpu_instruction_master_read                                            : std_logic;                     -- cpu:i_read -> mm_interconnect_0:cpu_instruction_master_read
+	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_chipselect             : std_logic;                     -- mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_chipselect -> jtag_uart_0:av_chipselect
+	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_readdata               : std_logic_vector(31 downto 0); -- jtag_uart_0:av_readdata -> mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_readdata
+	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_waitrequest            : std_logic;                     -- jtag_uart_0:av_waitrequest -> mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_waitrequest
+	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_address                : std_logic_vector(0 downto 0);  -- mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_address -> jtag_uart_0:av_address
+	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_read                   : std_logic;                     -- mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_read -> mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_read:in
+	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write                  : std_logic;                     -- mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_write -> mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write:in
+	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_writedata              : std_logic_vector(31 downto 0); -- mm_interconnect_0:jtag_uart_0_avalon_jtag_slave_writedata -> jtag_uart_0:av_writedata
+	signal mm_interconnect_0_av2segm3_0_avalon_slave_address                      : std_logic_vector(1 downto 0);  -- mm_interconnect_0:AV2SEGM3_0_avalon_slave_address -> AV2SEGM3_0:avalon_slave_address
+	signal mm_interconnect_0_av2segm3_0_avalon_slave_write                        : std_logic;                     -- mm_interconnect_0:AV2SEGM3_0_avalon_slave_write -> AV2SEGM3_0:avalon_slave_write
+	signal mm_interconnect_0_av2segm3_0_avalon_slave_writedata                    : std_logic_vector(7 downto 0);  -- mm_interconnect_0:AV2SEGM3_0_avalon_slave_writedata -> AV2SEGM3_0:avalon_slave_writedata
+	signal mm_interconnect_0_av2segm3_1_avalon_slave_address                      : std_logic_vector(1 downto 0);  -- mm_interconnect_0:AV2SEGM3_1_avalon_slave_address -> AV2SEGM3_1:avalon_slave_address
+	signal mm_interconnect_0_av2segm3_1_avalon_slave_write                        : std_logic;                     -- mm_interconnect_0:AV2SEGM3_1_avalon_slave_write -> AV2SEGM3_1:avalon_slave_write
+	signal mm_interconnect_0_av2segm3_1_avalon_slave_writedata                    : std_logic_vector(7 downto 0);  -- mm_interconnect_0:AV2SEGM3_1_avalon_slave_writedata -> AV2SEGM3_1:avalon_slave_writedata
+	signal mm_interconnect_0_vga_0_avalon_slave_address                           : std_logic_vector(1 downto 0);  -- mm_interconnect_0:VGA_0_avalon_slave_address -> VGA_0:avalon_slave_address
+	signal mm_interconnect_0_vga_0_avalon_slave_write                             : std_logic;                     -- mm_interconnect_0:VGA_0_avalon_slave_write -> VGA_0:avalon_slave_write
+	signal mm_interconnect_0_vga_0_avalon_slave_writedata                         : std_logic_vector(31 downto 0); -- mm_interconnect_0:VGA_0_avalon_slave_writedata -> VGA_0:avalon_slave_writedata
+	signal mm_interconnect_0_opencores_i2c_0_avalon_slave_0_chipselect            : std_logic;                     -- mm_interconnect_0:opencores_i2c_0_avalon_slave_0_chipselect -> opencores_i2c_0:wb_stb_i
+	signal mm_interconnect_0_opencores_i2c_0_avalon_slave_0_readdata              : std_logic_vector(7 downto 0);  -- opencores_i2c_0:wb_dat_o -> mm_interconnect_0:opencores_i2c_0_avalon_slave_0_readdata
+	signal opencores_i2c_0_avalon_slave_0_waitrequest                             : std_logic;                     -- opencores_i2c_0:wb_ack_o -> opencores_i2c_0_avalon_slave_0_waitrequest:in
+	signal mm_interconnect_0_opencores_i2c_0_avalon_slave_0_address               : std_logic_vector(2 downto 0);  -- mm_interconnect_0:opencores_i2c_0_avalon_slave_0_address -> opencores_i2c_0:wb_adr_i
+	signal mm_interconnect_0_opencores_i2c_0_avalon_slave_0_write                 : std_logic;                     -- mm_interconnect_0:opencores_i2c_0_avalon_slave_0_write -> opencores_i2c_0:wb_we_i
+	signal mm_interconnect_0_opencores_i2c_0_avalon_slave_0_writedata             : std_logic_vector(7 downto 0);  -- mm_interconnect_0:opencores_i2c_0_avalon_slave_0_writedata -> opencores_i2c_0:wb_dat_i
+	signal mm_interconnect_0_cpu_debug_mem_slave_readdata                         : std_logic_vector(31 downto 0); -- cpu:debug_mem_slave_readdata -> mm_interconnect_0:cpu_debug_mem_slave_readdata
+	signal mm_interconnect_0_cpu_debug_mem_slave_waitrequest                      : std_logic;                     -- cpu:debug_mem_slave_waitrequest -> mm_interconnect_0:cpu_debug_mem_slave_waitrequest
+	signal mm_interconnect_0_cpu_debug_mem_slave_debugaccess                      : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_debugaccess -> cpu:debug_mem_slave_debugaccess
+	signal mm_interconnect_0_cpu_debug_mem_slave_address                          : std_logic_vector(8 downto 0);  -- mm_interconnect_0:cpu_debug_mem_slave_address -> cpu:debug_mem_slave_address
+	signal mm_interconnect_0_cpu_debug_mem_slave_read                             : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_read -> cpu:debug_mem_slave_read
+	signal mm_interconnect_0_cpu_debug_mem_slave_byteenable                       : std_logic_vector(3 downto 0);  -- mm_interconnect_0:cpu_debug_mem_slave_byteenable -> cpu:debug_mem_slave_byteenable
+	signal mm_interconnect_0_cpu_debug_mem_slave_write                            : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_write -> cpu:debug_mem_slave_write
+	signal mm_interconnect_0_cpu_debug_mem_slave_writedata                        : std_logic_vector(31 downto 0); -- mm_interconnect_0:cpu_debug_mem_slave_writedata -> cpu:debug_mem_slave_writedata
+	signal mm_interconnect_0_ram_s1_chipselect                                    : std_logic;                     -- mm_interconnect_0:ram_s1_chipselect -> ram:chipselect
+	signal mm_interconnect_0_ram_s1_readdata                                      : std_logic_vector(31 downto 0); -- ram:readdata -> mm_interconnect_0:ram_s1_readdata
+	signal mm_interconnect_0_ram_s1_address                                       : std_logic_vector(14 downto 0); -- mm_interconnect_0:ram_s1_address -> ram:address
+	signal mm_interconnect_0_ram_s1_byteenable                                    : std_logic_vector(3 downto 0);  -- mm_interconnect_0:ram_s1_byteenable -> ram:byteenable
+	signal mm_interconnect_0_ram_s1_write                                         : std_logic;                     -- mm_interconnect_0:ram_s1_write -> ram:write
+	signal mm_interconnect_0_ram_s1_writedata                                     : std_logic_vector(31 downto 0); -- mm_interconnect_0:ram_s1_writedata -> ram:writedata
+	signal mm_interconnect_0_ram_s1_clken                                         : std_logic;                     -- mm_interconnect_0:ram_s1_clken -> ram:clken
+	signal mm_interconnect_0_pio_0_s1_chipselect                                  : std_logic;                     -- mm_interconnect_0:pio_0_s1_chipselect -> pio_0:chipselect
+	signal mm_interconnect_0_pio_0_s1_readdata                                    : std_logic_vector(31 downto 0); -- pio_0:readdata -> mm_interconnect_0:pio_0_s1_readdata
+	signal mm_interconnect_0_pio_0_s1_address                                     : std_logic_vector(1 downto 0);  -- mm_interconnect_0:pio_0_s1_address -> pio_0:address
+	signal mm_interconnect_0_pio_0_s1_write                                       : std_logic;                     -- mm_interconnect_0:pio_0_s1_write -> mm_interconnect_0_pio_0_s1_write:in
+	signal mm_interconnect_0_pio_0_s1_writedata                                   : std_logic_vector(31 downto 0); -- mm_interconnect_0:pio_0_s1_writedata -> pio_0:writedata
+	signal irq_mapper_receiver0_irq                                               : std_logic;                     -- opencores_i2c_0:wb_inta_o -> irq_mapper:receiver0_irq
+	signal irq_mapper_receiver1_irq                                               : std_logic;                     -- jtag_uart_0:av_irq -> irq_mapper:receiver1_irq
+	signal irq_mapper_receiver2_irq                                               : std_logic;                     -- pio_0:irq -> irq_mapper:receiver2_irq
+	signal cpu_irq_irq                                                            : std_logic_vector(31 downto 0); -- irq_mapper:sender_irq -> cpu:irq
+	signal rst_controller_reset_out_reset                                         : std_logic;                     -- rst_controller:reset_out -> [mm_interconnect_0:AV2SEGM3_0_reset_sink_reset_bridge_in_reset_reset, opencores_i2c_0:wb_rst_i, rst_controller_reset_out_reset:in]
+	signal rst_controller_001_reset_out_reset                                     : std_logic;                     -- rst_controller_001:reset_out -> [irq_mapper:reset, mm_interconnect_0:cpu_reset_reset_bridge_in_reset_reset, ram:reset, rst_controller_001_reset_out_reset:in, rst_translator:in_reset]
+	signal rst_controller_001_reset_out_reset_req                                 : std_logic;                     -- rst_controller_001:reset_req -> [cpu:reset_req, ram:reset_req, rst_translator:reset_req_in]
+	signal cpu_debug_reset_request_reset                                          : std_logic;                     -- cpu:debug_reset_request -> rst_controller_001:reset_in1
+	signal reset_reset_n_ports_inv                                                : std_logic;                     -- reset_reset_n:inv -> [rst_controller:reset_in0, rst_controller_001:reset_in0]
+	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_read_ports_inv         : std_logic;                     -- mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_read:inv -> jtag_uart_0:av_read_n
+	signal mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write_ports_inv        : std_logic;                     -- mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write:inv -> jtag_uart_0:av_write_n
+	signal mm_interconnect_0_opencores_i2c_0_avalon_slave_0_inv                   : std_logic;                     -- opencores_i2c_0_avalon_slave_0_waitrequest:inv -> mm_interconnect_0:opencores_i2c_0_avalon_slave_0_waitrequest
+	signal mm_interconnect_0_pio_0_s1_write_ports_inv                             : std_logic;                     -- mm_interconnect_0_pio_0_s1_write:inv -> pio_0:write_n
+	signal rst_controller_reset_out_reset_ports_inv                               : std_logic;                     -- rst_controller_reset_out_reset:inv -> [AV2SEGM3_0:reset_sink_reset, AV2SEGM3_1:reset_sink_reset, VGA_0:reset_n, pio_0:reset_n]
+	signal rst_controller_001_reset_out_reset_ports_inv                           : std_logic;                     -- rst_controller_001_reset_out_reset:inv -> [cpu:reset_n, jtag_uart_0:rst_n]
 
 begin
 
@@ -395,17 +683,30 @@ begin
 			segm_out_hundreds      => segm_con_new_signal_2                                --             .new_signal_2
 		);
 
-	btn0 : component maoin_btn0
+	av2segm3_1 : component AV2SEGM3
 		port map (
-			clk        => clk_clk,                                      --                 clk.clk
-			reset_n    => rst_controller_001_reset_out_reset_ports_inv, --               reset.reset_n
-			address    => mm_interconnect_0_btn0_s1_address,            --                  s1.address
-			write_n    => mm_interconnect_0_btn0_s1_write_ports_inv,    --                    .write_n
-			writedata  => mm_interconnect_0_btn0_s1_writedata,          --                    .writedata
-			chipselect => mm_interconnect_0_btn0_s1_chipselect,         --                    .chipselect
-			readdata   => mm_interconnect_0_btn0_s1_readdata,           --                    .readdata
-			in_port    => btn0_i_export,                                -- external_connection.export
-			irq        => irq_mapper_receiver1_irq                      --                 irq.irq
+			avalon_slave_address   => mm_interconnect_0_av2segm3_1_avalon_slave_address,   -- avalon_slave.address
+			avalon_slave_writedata => mm_interconnect_0_av2segm3_1_avalon_slave_writedata, --             .writedata
+			avalon_slave_write     => mm_interconnect_0_av2segm3_1_avalon_slave_write,     --             .write
+			clock_sink_clk         => clk_clk,                                             --   clock_sink.clk
+			reset_sink_reset       => rst_controller_reset_out_reset_ports_inv,            --   reset_sink.reset_n
+			segm_out_ones          => segm_con2_new_signal,                                --  conduit_end.new_signal
+			segm_out_tens          => segm_con2_new_signal_1,                              --             .new_signal_1
+			segm_out_hundreds      => segm_con2_new_signal_2                               --             .new_signal_2
+		);
+
+	vga_0 : component VGA
+		port map (
+			clk                    => clk_clk,                                        --        clock.clk
+			reset_n                => rst_controller_reset_out_reset_ports_inv,       --        reset.reset_n
+			avalon_slave_address   => mm_interconnect_0_vga_0_avalon_slave_address,   -- avalon_slave.address
+			avalon_slave_writedata => mm_interconnect_0_vga_0_avalon_slave_writedata, --             .writedata
+			avalon_slave_write     => mm_interconnect_0_vga_0_avalon_slave_write,     --             .write
+			g                      => vga_0_vga_g,                                    --          VGA.g
+			b                      => vga_0_vga_b,                                    --             .b
+			hs                     => vga_0_vga_hsync,                                --             .hsync
+			vs                     => vga_0_vga_vsync,                                --             .vsync
+			r                      => vga_0_vga_r                                     --             .r
 		);
 
 	cpu : component maoin_cpu
@@ -435,7 +736,24 @@ begin
 			debug_mem_slave_waitrequest         => mm_interconnect_0_cpu_debug_mem_slave_waitrequest, --                          .waitrequest
 			debug_mem_slave_write               => mm_interconnect_0_cpu_debug_mem_slave_write,       --                          .write
 			debug_mem_slave_writedata           => mm_interconnect_0_cpu_debug_mem_slave_writedata,   --                          .writedata
-			dummy_ci_port                       => open                                               -- custom_instruction_master.readra
+			E_ci_multi_done                     => cpu_custom_instruction_master_done,                -- custom_instruction_master.done
+			E_ci_multi_clk_en                   => cpu_custom_instruction_master_clk_en,              --                          .clk_en
+			E_ci_multi_start                    => cpu_custom_instruction_master_start,               --                          .start
+			E_ci_result                         => cpu_custom_instruction_master_result,              --                          .result
+			D_ci_a                              => cpu_custom_instruction_master_a,                   --                          .a
+			D_ci_b                              => cpu_custom_instruction_master_b,                   --                          .b
+			D_ci_c                              => cpu_custom_instruction_master_c,                   --                          .c
+			D_ci_n                              => cpu_custom_instruction_master_n,                   --                          .n
+			D_ci_readra                         => cpu_custom_instruction_master_readra,              --                          .readra
+			D_ci_readrb                         => cpu_custom_instruction_master_readrb,              --                          .readrb
+			D_ci_writerc                        => cpu_custom_instruction_master_writerc,             --                          .writerc
+			E_ci_dataa                          => cpu_custom_instruction_master_dataa,               --                          .dataa
+			E_ci_datab                          => cpu_custom_instruction_master_datab,               --                          .datab
+			E_ci_multi_clock                    => cpu_custom_instruction_master_clk,                 --                          .clk
+			E_ci_multi_reset                    => cpu_custom_instruction_master_reset,               --                          .reset
+			E_ci_multi_reset_req                => cpu_custom_instruction_master_reset_req,           --                          .reset_req
+			W_ci_estatus                        => cpu_custom_instruction_master_estatus,             --                          .estatus
+			W_ci_ipending                       => cpu_custom_instruction_master_ipending             --                          .ipending
 		);
 
 	jtag_uart_0 : component maoin_jtag_uart_0
@@ -449,7 +767,51 @@ begin
 			av_write_n     => mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write_ports_inv, --                  .write_n
 			av_writedata   => mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_writedata,       --                  .writedata
 			av_waitrequest => mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_waitrequest,     --                  .waitrequest
-			av_irq         => irq_mapper_receiver0_irq                                         --               irq.irq
+			av_irq         => irq_mapper_receiver1_irq                                         --               irq.irq
+		);
+
+	nios_custom_instr_floating_point_0 : component fpoint_wrapper
+		generic map (
+			useDivider => 1
+		)
+		port map (
+			clk    => cpu_custom_instruction_master_multi_slave_translator0_ci_master_clk,    -- s1.clk
+			clk_en => cpu_custom_instruction_master_multi_slave_translator0_ci_master_clk_en, --   .clk_en
+			dataa  => cpu_custom_instruction_master_multi_slave_translator0_ci_master_dataa,  --   .dataa
+			datab  => cpu_custom_instruction_master_multi_slave_translator0_ci_master_datab,  --   .datab
+			n      => cpu_custom_instruction_master_multi_slave_translator0_ci_master_n,      --   .n
+			reset  => cpu_custom_instruction_master_multi_slave_translator0_ci_master_reset,  --   .reset
+			start  => cpu_custom_instruction_master_multi_slave_translator0_ci_master_start,  --   .start
+			done   => cpu_custom_instruction_master_multi_slave_translator0_ci_master_done,   --   .done
+			result => cpu_custom_instruction_master_multi_slave_translator0_ci_master_result  --   .result
+		);
+
+	opencores_i2c_0 : component opencores_i2c
+		port map (
+			wb_clk_i   => clk_clk,                                                     --            clock.clk
+			wb_rst_i   => rst_controller_reset_out_reset,                              --      clock_reset.reset
+			scl_pad_io => opencores_i2c_0_export_0_scl_pad_io,                         --         export_0.export
+			sda_pad_io => opencores_i2c_0_export_0_sda_pad_io,                         --                 .export
+			wb_adr_i   => mm_interconnect_0_opencores_i2c_0_avalon_slave_0_address,    --   avalon_slave_0.address
+			wb_dat_i   => mm_interconnect_0_opencores_i2c_0_avalon_slave_0_writedata,  --                 .writedata
+			wb_dat_o   => mm_interconnect_0_opencores_i2c_0_avalon_slave_0_readdata,   --                 .readdata
+			wb_we_i    => mm_interconnect_0_opencores_i2c_0_avalon_slave_0_write,      --                 .write
+			wb_stb_i   => mm_interconnect_0_opencores_i2c_0_avalon_slave_0_chipselect, --                 .chipselect
+			wb_ack_o   => opencores_i2c_0_avalon_slave_0_waitrequest,                  --                 .waitrequest_n
+			wb_inta_o  => irq_mapper_receiver0_irq                                     -- interrupt_sender.irq
+		);
+
+	pio_0 : component maoin_pio_0
+		port map (
+			clk        => clk_clk,                                    --                 clk.clk
+			reset_n    => rst_controller_reset_out_reset_ports_inv,   --               reset.reset_n
+			address    => mm_interconnect_0_pio_0_s1_address,         --                  s1.address
+			write_n    => mm_interconnect_0_pio_0_s1_write_ports_inv, --                    .write_n
+			writedata  => mm_interconnect_0_pio_0_s1_writedata,       --                    .writedata
+			chipselect => mm_interconnect_0_pio_0_s1_chipselect,      --                    .chipselect
+			readdata   => mm_interconnect_0_pio_0_s1_readdata,        --                    .readdata
+			in_port    => btn0_export,                                -- external_connection.export
+			irq        => irq_mapper_receiver2_irq                    --                 irq.irq
 		);
 
 	ram : component maoin_ram
@@ -467,16 +829,152 @@ begin
 			freeze     => '0'                                     -- (terminated)
 		);
 
-	timer_0 : component maoin_timer_0
+	cpu_custom_instruction_master_translator : component altera_customins_master_translator
+		generic map (
+			SHARED_COMB_AND_MULTI => 1
+		)
 		port map (
-			clk        => clk_clk,                                      --   clk.clk
-			reset_n    => rst_controller_reset_out_reset_ports_inv,     -- reset.reset_n
-			address    => mm_interconnect_0_timer_0_s1_address,         --    s1.address
-			writedata  => mm_interconnect_0_timer_0_s1_writedata,       --      .writedata
-			readdata   => mm_interconnect_0_timer_0_s1_readdata,        --      .readdata
-			chipselect => mm_interconnect_0_timer_0_s1_chipselect,      --      .chipselect
-			write_n    => mm_interconnect_0_timer_0_s1_write_ports_inv, --      .write_n
-			irq        => irq_mapper_receiver2_irq                      --   irq.irq
+			ci_slave_dataa            => cpu_custom_instruction_master_dataa,                                --        ci_slave.dataa
+			ci_slave_datab            => cpu_custom_instruction_master_datab,                                --                .datab
+			ci_slave_result           => cpu_custom_instruction_master_result,                               --                .result
+			ci_slave_n                => cpu_custom_instruction_master_n,                                    --                .n
+			ci_slave_readra           => cpu_custom_instruction_master_readra,                               --                .readra
+			ci_slave_readrb           => cpu_custom_instruction_master_readrb,                               --                .readrb
+			ci_slave_writerc          => cpu_custom_instruction_master_writerc,                              --                .writerc
+			ci_slave_a                => cpu_custom_instruction_master_a,                                    --                .a
+			ci_slave_b                => cpu_custom_instruction_master_b,                                    --                .b
+			ci_slave_c                => cpu_custom_instruction_master_c,                                    --                .c
+			ci_slave_ipending         => cpu_custom_instruction_master_ipending,                             --                .ipending
+			ci_slave_estatus          => cpu_custom_instruction_master_estatus,                              --                .estatus
+			ci_slave_multi_clk        => cpu_custom_instruction_master_clk,                                  --                .clk
+			ci_slave_multi_reset      => cpu_custom_instruction_master_reset,                                --                .reset
+			ci_slave_multi_clken      => cpu_custom_instruction_master_clk_en,                               --                .clk_en
+			ci_slave_multi_reset_req  => cpu_custom_instruction_master_reset_req,                            --                .reset_req
+			ci_slave_multi_start      => cpu_custom_instruction_master_start,                                --                .start
+			ci_slave_multi_done       => cpu_custom_instruction_master_done,                                 --                .done
+			comb_ci_master_dataa      => open,                                                               --  comb_ci_master.dataa
+			comb_ci_master_datab      => open,                                                               --                .datab
+			comb_ci_master_result     => open,                                                               --                .result
+			comb_ci_master_n          => open,                                                               --                .n
+			comb_ci_master_readra     => open,                                                               --                .readra
+			comb_ci_master_readrb     => open,                                                               --                .readrb
+			comb_ci_master_writerc    => open,                                                               --                .writerc
+			comb_ci_master_a          => open,                                                               --                .a
+			comb_ci_master_b          => open,                                                               --                .b
+			comb_ci_master_c          => open,                                                               --                .c
+			comb_ci_master_ipending   => open,                                                               --                .ipending
+			comb_ci_master_estatus    => open,                                                               --                .estatus
+			multi_ci_master_clk       => cpu_custom_instruction_master_translator_multi_ci_master_clk,       -- multi_ci_master.clk
+			multi_ci_master_reset     => cpu_custom_instruction_master_translator_multi_ci_master_reset,     --                .reset
+			multi_ci_master_clken     => cpu_custom_instruction_master_translator_multi_ci_master_clk_en,    --                .clk_en
+			multi_ci_master_reset_req => cpu_custom_instruction_master_translator_multi_ci_master_reset_req, --                .reset_req
+			multi_ci_master_start     => cpu_custom_instruction_master_translator_multi_ci_master_start,     --                .start
+			multi_ci_master_done      => cpu_custom_instruction_master_translator_multi_ci_master_done,      --                .done
+			multi_ci_master_dataa     => cpu_custom_instruction_master_translator_multi_ci_master_dataa,     --                .dataa
+			multi_ci_master_datab     => cpu_custom_instruction_master_translator_multi_ci_master_datab,     --                .datab
+			multi_ci_master_result    => cpu_custom_instruction_master_translator_multi_ci_master_result,    --                .result
+			multi_ci_master_n         => cpu_custom_instruction_master_translator_multi_ci_master_n,         --                .n
+			multi_ci_master_readra    => cpu_custom_instruction_master_translator_multi_ci_master_readra,    --                .readra
+			multi_ci_master_readrb    => cpu_custom_instruction_master_translator_multi_ci_master_readrb,    --                .readrb
+			multi_ci_master_writerc   => cpu_custom_instruction_master_translator_multi_ci_master_writerc,   --                .writerc
+			multi_ci_master_a         => cpu_custom_instruction_master_translator_multi_ci_master_a,         --                .a
+			multi_ci_master_b         => cpu_custom_instruction_master_translator_multi_ci_master_b,         --                .b
+			multi_ci_master_c         => cpu_custom_instruction_master_translator_multi_ci_master_c,         --                .c
+			ci_slave_multi_dataa      => "00000000000000000000000000000000",                                 --     (terminated)
+			ci_slave_multi_datab      => "00000000000000000000000000000000",                                 --     (terminated)
+			ci_slave_multi_result     => open,                                                               --     (terminated)
+			ci_slave_multi_n          => "00000000",                                                         --     (terminated)
+			ci_slave_multi_readra     => '0',                                                                --     (terminated)
+			ci_slave_multi_readrb     => '0',                                                                --     (terminated)
+			ci_slave_multi_writerc    => '0',                                                                --     (terminated)
+			ci_slave_multi_a          => "00000",                                                            --     (terminated)
+			ci_slave_multi_b          => "00000",                                                            --     (terminated)
+			ci_slave_multi_c          => "00000"                                                             --     (terminated)
+		);
+
+	cpu_custom_instruction_master_multi_xconnect : component maoin_cpu_custom_instruction_master_multi_xconnect
+		port map (
+			ci_slave_dataa       => cpu_custom_instruction_master_translator_multi_ci_master_dataa,     --   ci_slave.dataa
+			ci_slave_datab       => cpu_custom_instruction_master_translator_multi_ci_master_datab,     --           .datab
+			ci_slave_result      => cpu_custom_instruction_master_translator_multi_ci_master_result,    --           .result
+			ci_slave_n           => cpu_custom_instruction_master_translator_multi_ci_master_n,         --           .n
+			ci_slave_readra      => cpu_custom_instruction_master_translator_multi_ci_master_readra,    --           .readra
+			ci_slave_readrb      => cpu_custom_instruction_master_translator_multi_ci_master_readrb,    --           .readrb
+			ci_slave_writerc     => cpu_custom_instruction_master_translator_multi_ci_master_writerc,   --           .writerc
+			ci_slave_a           => cpu_custom_instruction_master_translator_multi_ci_master_a,         --           .a
+			ci_slave_b           => cpu_custom_instruction_master_translator_multi_ci_master_b,         --           .b
+			ci_slave_c           => cpu_custom_instruction_master_translator_multi_ci_master_c,         --           .c
+			ci_slave_ipending    => open,                                                               --           .ipending
+			ci_slave_estatus     => open,                                                               --           .estatus
+			ci_slave_clk         => cpu_custom_instruction_master_translator_multi_ci_master_clk,       --           .clk
+			ci_slave_reset       => cpu_custom_instruction_master_translator_multi_ci_master_reset,     --           .reset
+			ci_slave_clken       => cpu_custom_instruction_master_translator_multi_ci_master_clk_en,    --           .clk_en
+			ci_slave_reset_req   => cpu_custom_instruction_master_translator_multi_ci_master_reset_req, --           .reset_req
+			ci_slave_start       => cpu_custom_instruction_master_translator_multi_ci_master_start,     --           .start
+			ci_slave_done        => cpu_custom_instruction_master_translator_multi_ci_master_done,      --           .done
+			ci_master0_dataa     => cpu_custom_instruction_master_multi_xconnect_ci_master0_dataa,      -- ci_master0.dataa
+			ci_master0_datab     => cpu_custom_instruction_master_multi_xconnect_ci_master0_datab,      --           .datab
+			ci_master0_result    => cpu_custom_instruction_master_multi_xconnect_ci_master0_result,     --           .result
+			ci_master0_n         => cpu_custom_instruction_master_multi_xconnect_ci_master0_n,          --           .n
+			ci_master0_readra    => cpu_custom_instruction_master_multi_xconnect_ci_master0_readra,     --           .readra
+			ci_master0_readrb    => cpu_custom_instruction_master_multi_xconnect_ci_master0_readrb,     --           .readrb
+			ci_master0_writerc   => cpu_custom_instruction_master_multi_xconnect_ci_master0_writerc,    --           .writerc
+			ci_master0_a         => cpu_custom_instruction_master_multi_xconnect_ci_master0_a,          --           .a
+			ci_master0_b         => cpu_custom_instruction_master_multi_xconnect_ci_master0_b,          --           .b
+			ci_master0_c         => cpu_custom_instruction_master_multi_xconnect_ci_master0_c,          --           .c
+			ci_master0_ipending  => cpu_custom_instruction_master_multi_xconnect_ci_master0_ipending,   --           .ipending
+			ci_master0_estatus   => cpu_custom_instruction_master_multi_xconnect_ci_master0_estatus,    --           .estatus
+			ci_master0_clk       => cpu_custom_instruction_master_multi_xconnect_ci_master0_clk,        --           .clk
+			ci_master0_reset     => cpu_custom_instruction_master_multi_xconnect_ci_master0_reset,      --           .reset
+			ci_master0_clken     => cpu_custom_instruction_master_multi_xconnect_ci_master0_clk_en,     --           .clk_en
+			ci_master0_reset_req => cpu_custom_instruction_master_multi_xconnect_ci_master0_reset_req,  --           .reset_req
+			ci_master0_start     => cpu_custom_instruction_master_multi_xconnect_ci_master0_start,      --           .start
+			ci_master0_done      => cpu_custom_instruction_master_multi_xconnect_ci_master0_done        --           .done
+		);
+
+	cpu_custom_instruction_master_multi_slave_translator0 : component altera_customins_slave_translator
+		generic map (
+			N_WIDTH          => 2,
+			USE_DONE         => 1,
+			NUM_FIXED_CYCLES => 1
+		)
+		port map (
+			ci_slave_dataa      => cpu_custom_instruction_master_multi_xconnect_ci_master0_dataa,          --  ci_slave.dataa
+			ci_slave_datab      => cpu_custom_instruction_master_multi_xconnect_ci_master0_datab,          --          .datab
+			ci_slave_result     => cpu_custom_instruction_master_multi_xconnect_ci_master0_result,         --          .result
+			ci_slave_n          => cpu_custom_instruction_master_multi_xconnect_ci_master0_n,              --          .n
+			ci_slave_readra     => cpu_custom_instruction_master_multi_xconnect_ci_master0_readra,         --          .readra
+			ci_slave_readrb     => cpu_custom_instruction_master_multi_xconnect_ci_master0_readrb,         --          .readrb
+			ci_slave_writerc    => cpu_custom_instruction_master_multi_xconnect_ci_master0_writerc,        --          .writerc
+			ci_slave_a          => cpu_custom_instruction_master_multi_xconnect_ci_master0_a,              --          .a
+			ci_slave_b          => cpu_custom_instruction_master_multi_xconnect_ci_master0_b,              --          .b
+			ci_slave_c          => cpu_custom_instruction_master_multi_xconnect_ci_master0_c,              --          .c
+			ci_slave_ipending   => cpu_custom_instruction_master_multi_xconnect_ci_master0_ipending,       --          .ipending
+			ci_slave_estatus    => cpu_custom_instruction_master_multi_xconnect_ci_master0_estatus,        --          .estatus
+			ci_slave_clk        => cpu_custom_instruction_master_multi_xconnect_ci_master0_clk,            --          .clk
+			ci_slave_clken      => cpu_custom_instruction_master_multi_xconnect_ci_master0_clk_en,         --          .clk_en
+			ci_slave_reset_req  => cpu_custom_instruction_master_multi_xconnect_ci_master0_reset_req,      --          .reset_req
+			ci_slave_reset      => cpu_custom_instruction_master_multi_xconnect_ci_master0_reset,          --          .reset
+			ci_slave_start      => cpu_custom_instruction_master_multi_xconnect_ci_master0_start,          --          .start
+			ci_slave_done       => cpu_custom_instruction_master_multi_xconnect_ci_master0_done,           --          .done
+			ci_master_dataa     => cpu_custom_instruction_master_multi_slave_translator0_ci_master_dataa,  -- ci_master.dataa
+			ci_master_datab     => cpu_custom_instruction_master_multi_slave_translator0_ci_master_datab,  --          .datab
+			ci_master_result    => cpu_custom_instruction_master_multi_slave_translator0_ci_master_result, --          .result
+			ci_master_n         => cpu_custom_instruction_master_multi_slave_translator0_ci_master_n,      --          .n
+			ci_master_clk       => cpu_custom_instruction_master_multi_slave_translator0_ci_master_clk,    --          .clk
+			ci_master_clken     => cpu_custom_instruction_master_multi_slave_translator0_ci_master_clk_en, --          .clk_en
+			ci_master_reset     => cpu_custom_instruction_master_multi_slave_translator0_ci_master_reset,  --          .reset
+			ci_master_start     => cpu_custom_instruction_master_multi_slave_translator0_ci_master_start,  --          .start
+			ci_master_done      => cpu_custom_instruction_master_multi_slave_translator0_ci_master_done,   --          .done
+			ci_master_readra    => open,                                                                   -- (terminated)
+			ci_master_readrb    => open,                                                                   -- (terminated)
+			ci_master_writerc   => open,                                                                   -- (terminated)
+			ci_master_a         => open,                                                                   -- (terminated)
+			ci_master_b         => open,                                                                   -- (terminated)
+			ci_master_c         => open,                                                                   -- (terminated)
+			ci_master_ipending  => open,                                                                   -- (terminated)
+			ci_master_estatus   => open,                                                                   -- (terminated)
+			ci_master_reset_req => open                                                                    -- (terminated)
 		);
 
 	mm_interconnect_0 : component maoin_mm_interconnect_0
@@ -499,11 +997,9 @@ begin
 			AV2SEGM3_0_avalon_slave_address                   => mm_interconnect_0_av2segm3_0_avalon_slave_address,           --                     AV2SEGM3_0_avalon_slave.address
 			AV2SEGM3_0_avalon_slave_write                     => mm_interconnect_0_av2segm3_0_avalon_slave_write,             --                                            .write
 			AV2SEGM3_0_avalon_slave_writedata                 => mm_interconnect_0_av2segm3_0_avalon_slave_writedata,         --                                            .writedata
-			btn0_s1_address                                   => mm_interconnect_0_btn0_s1_address,                           --                                     btn0_s1.address
-			btn0_s1_write                                     => mm_interconnect_0_btn0_s1_write,                             --                                            .write
-			btn0_s1_readdata                                  => mm_interconnect_0_btn0_s1_readdata,                          --                                            .readdata
-			btn0_s1_writedata                                 => mm_interconnect_0_btn0_s1_writedata,                         --                                            .writedata
-			btn0_s1_chipselect                                => mm_interconnect_0_btn0_s1_chipselect,                        --                                            .chipselect
+			AV2SEGM3_1_avalon_slave_address                   => mm_interconnect_0_av2segm3_1_avalon_slave_address,           --                     AV2SEGM3_1_avalon_slave.address
+			AV2SEGM3_1_avalon_slave_write                     => mm_interconnect_0_av2segm3_1_avalon_slave_write,             --                                            .write
+			AV2SEGM3_1_avalon_slave_writedata                 => mm_interconnect_0_av2segm3_1_avalon_slave_writedata,         --                                            .writedata
 			cpu_debug_mem_slave_address                       => mm_interconnect_0_cpu_debug_mem_slave_address,               --                         cpu_debug_mem_slave.address
 			cpu_debug_mem_slave_write                         => mm_interconnect_0_cpu_debug_mem_slave_write,                 --                                            .write
 			cpu_debug_mem_slave_read                          => mm_interconnect_0_cpu_debug_mem_slave_read,                  --                                            .read
@@ -519,6 +1015,17 @@ begin
 			jtag_uart_0_avalon_jtag_slave_writedata           => mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_writedata,   --                                            .writedata
 			jtag_uart_0_avalon_jtag_slave_waitrequest         => mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_waitrequest, --                                            .waitrequest
 			jtag_uart_0_avalon_jtag_slave_chipselect          => mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_chipselect,  --                                            .chipselect
+			opencores_i2c_0_avalon_slave_0_address            => mm_interconnect_0_opencores_i2c_0_avalon_slave_0_address,    --              opencores_i2c_0_avalon_slave_0.address
+			opencores_i2c_0_avalon_slave_0_write              => mm_interconnect_0_opencores_i2c_0_avalon_slave_0_write,      --                                            .write
+			opencores_i2c_0_avalon_slave_0_readdata           => mm_interconnect_0_opencores_i2c_0_avalon_slave_0_readdata,   --                                            .readdata
+			opencores_i2c_0_avalon_slave_0_writedata          => mm_interconnect_0_opencores_i2c_0_avalon_slave_0_writedata,  --                                            .writedata
+			opencores_i2c_0_avalon_slave_0_waitrequest        => mm_interconnect_0_opencores_i2c_0_avalon_slave_0_inv,        --                                            .waitrequest
+			opencores_i2c_0_avalon_slave_0_chipselect         => mm_interconnect_0_opencores_i2c_0_avalon_slave_0_chipselect, --                                            .chipselect
+			pio_0_s1_address                                  => mm_interconnect_0_pio_0_s1_address,                          --                                    pio_0_s1.address
+			pio_0_s1_write                                    => mm_interconnect_0_pio_0_s1_write,                            --                                            .write
+			pio_0_s1_readdata                                 => mm_interconnect_0_pio_0_s1_readdata,                         --                                            .readdata
+			pio_0_s1_writedata                                => mm_interconnect_0_pio_0_s1_writedata,                        --                                            .writedata
+			pio_0_s1_chipselect                               => mm_interconnect_0_pio_0_s1_chipselect,                       --                                            .chipselect
 			ram_s1_address                                    => mm_interconnect_0_ram_s1_address,                            --                                      ram_s1.address
 			ram_s1_write                                      => mm_interconnect_0_ram_s1_write,                              --                                            .write
 			ram_s1_readdata                                   => mm_interconnect_0_ram_s1_readdata,                           --                                            .readdata
@@ -526,11 +1033,9 @@ begin
 			ram_s1_byteenable                                 => mm_interconnect_0_ram_s1_byteenable,                         --                                            .byteenable
 			ram_s1_chipselect                                 => mm_interconnect_0_ram_s1_chipselect,                         --                                            .chipselect
 			ram_s1_clken                                      => mm_interconnect_0_ram_s1_clken,                              --                                            .clken
-			timer_0_s1_address                                => mm_interconnect_0_timer_0_s1_address,                        --                                  timer_0_s1.address
-			timer_0_s1_write                                  => mm_interconnect_0_timer_0_s1_write,                          --                                            .write
-			timer_0_s1_readdata                               => mm_interconnect_0_timer_0_s1_readdata,                       --                                            .readdata
-			timer_0_s1_writedata                              => mm_interconnect_0_timer_0_s1_writedata,                      --                                            .writedata
-			timer_0_s1_chipselect                             => mm_interconnect_0_timer_0_s1_chipselect                      --                                            .chipselect
+			VGA_0_avalon_slave_address                        => mm_interconnect_0_vga_0_avalon_slave_address,                --                          VGA_0_avalon_slave.address
+			VGA_0_avalon_slave_write                          => mm_interconnect_0_vga_0_avalon_slave_write,                  --                                            .write
+			VGA_0_avalon_slave_writedata                      => mm_interconnect_0_vga_0_avalon_slave_writedata               --                                            .writedata
 		);
 
 	irq_mapper : component maoin_irq_mapper
@@ -679,9 +1184,9 @@ begin
 
 	mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write_ports_inv <= not mm_interconnect_0_jtag_uart_0_avalon_jtag_slave_write;
 
-	mm_interconnect_0_btn0_s1_write_ports_inv <= not mm_interconnect_0_btn0_s1_write;
+	mm_interconnect_0_opencores_i2c_0_avalon_slave_0_inv <= not opencores_i2c_0_avalon_slave_0_waitrequest;
 
-	mm_interconnect_0_timer_0_s1_write_ports_inv <= not mm_interconnect_0_timer_0_s1_write;
+	mm_interconnect_0_pio_0_s1_write_ports_inv <= not mm_interconnect_0_pio_0_s1_write;
 
 	rst_controller_reset_out_reset_ports_inv <= not rst_controller_reset_out_reset;
 

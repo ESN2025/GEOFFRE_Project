@@ -1,56 +1,77 @@
 Info: Starting: Create simulation model
-Info: qsys-generate /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin.qsys --simulation=VHDL --allow-mixed-language-simulation --output-directory=/home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation --family="MAX 10" --part=10M50DAF484C7G
-Progress: Loading GEOFFRE_Lab2/maoin.qsys
+Info: qsys-generate /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin.qsys --simulation=VHDL --allow-mixed-language-simulation --output-directory=/home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation --family="MAX 10" --part=10M50DAF484C7G
+Progress: Loading GEOFFRE_Project_vga/maoin.qsys
 Progress: Reading input file
 Progress: Adding AV2SEGM3_0 [AV2SEGM3 1.0]
 Progress: Parameterizing module AV2SEGM3_0
-Progress: Adding btn0 [altera_avalon_pio 20.1]
-Progress: Parameterizing module btn0
+Progress: Adding AV2SEGM3_1 [AV2SEGM3 1.0]
+Progress: Parameterizing module AV2SEGM3_1
+Progress: Adding VGA_0 [VGA 1.0]
+Progress: Parameterizing module VGA_0
 Progress: Adding clk [clock_source 20.1]
 Progress: Parameterizing module clk
 Progress: Adding cpu [altera_nios2_gen2 20.1]
 Progress: Parameterizing module cpu
 Progress: Adding jtag_uart_0 [altera_avalon_jtag_uart 20.1]
 Progress: Parameterizing module jtag_uart_0
+Progress: Adding nios_custom_instr_floating_point_0 [altera_nios_custom_instr_floating_point 20.1]
+Progress: Parameterizing module nios_custom_instr_floating_point_0
+Progress: Adding opencores_i2c_0 [opencores_i2c 9.1]
+Progress: Parameterizing module opencores_i2c_0
+Progress: Adding pio_0 [altera_avalon_pio 20.1]
+Progress: Parameterizing module pio_0
 Progress: Adding ram [altera_avalon_onchip_memory2 20.1]
 Progress: Parameterizing module ram
 Progress: Building connections
 Progress: Parameterizing connections
 Progress: Validating
 Progress: Done reading input file
+Warning: maoin.VGA: The SIM_VERILOG fileset must specify the top-level module name.
 Info: maoin.jtag_uart_0: JTAG UART IP input clock need to be at least double (2x) the operating frequency of JTAG TCK on board
+Info: maoin.pio_0: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
 Info: maoin: Generating maoin "maoin" for SIM_VHDL
+Warning: maoin: "No matching role found for cpu_custom_instruction_master_multi_xconnect:ci_slave:ci_slave_ipending (ipending)"
+Warning: maoin: "No matching role found for cpu_custom_instruction_master_multi_xconnect:ci_slave:ci_slave_estatus (estatus)"
 Info: AV2SEGM3_0: "maoin" instantiated AV2SEGM3 "AV2SEGM3_0"
-Info: btn0: Starting RTL generation for module 'maoin_btn0'
-Info: btn0:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=maoin_btn0 --dir=/tmp/alt0101_4626221225866863836.dir/0051_btn0_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --vhdl --config=/tmp/alt0101_4626221225866863836.dir/0051_btn0_gen//maoin_btn0_component_configuration.pl  --do_build_sim=1    --sim_dir=/tmp/alt0101_4626221225866863836.dir/0051_btn0_gen/  ]
-Info: btn0: Done RTL generation for module 'maoin_btn0'
-Info: btn0: "maoin" instantiated altera_avalon_pio "btn0"
+Info: VGA_0: "maoin" instantiated VGA "VGA_0"
 Info: cpu: "maoin" instantiated altera_nios2_gen2 "cpu"
 Info: jtag_uart_0: Starting RTL generation for module 'maoin_jtag_uart_0'
-Info: jtag_uart_0:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart/generate_rtl.pl --name=maoin_jtag_uart_0 --dir=/tmp/alt0101_4626221225866863836.dir/0052_jtag_uart_0_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --vhdl --config=/tmp/alt0101_4626221225866863836.dir/0052_jtag_uart_0_gen//maoin_jtag_uart_0_component_configuration.pl  --do_build_sim=1    --sim_dir=/tmp/alt0101_4626221225866863836.dir/0052_jtag_uart_0_gen/  ]
+Info: jtag_uart_0:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart/generate_rtl.pl --name=maoin_jtag_uart_0 --dir=/tmp/alt0109_1733681350385518826.dir/0044_jtag_uart_0_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --vhdl --config=/tmp/alt0109_1733681350385518826.dir/0044_jtag_uart_0_gen//maoin_jtag_uart_0_component_configuration.pl  --do_build_sim=1    --sim_dir=/tmp/alt0109_1733681350385518826.dir/0044_jtag_uart_0_gen/  ]
 Info: jtag_uart_0: Done RTL generation for module 'maoin_jtag_uart_0'
 Info: jtag_uart_0: "maoin" instantiated altera_avalon_jtag_uart "jtag_uart_0"
+Info: nios_custom_instr_floating_point_0: "maoin" instantiated altera_nios_custom_instr_floating_point "nios_custom_instr_floating_point_0"
+Info: opencores_i2c_0: "maoin" instantiated opencores_i2c "opencores_i2c_0"
+Info: pio_0: Starting RTL generation for module 'maoin_pio_0'
+Info: pio_0:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=maoin_pio_0 --dir=/tmp/alt0109_1733681350385518826.dir/0046_pio_0_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --vhdl --config=/tmp/alt0109_1733681350385518826.dir/0046_pio_0_gen//maoin_pio_0_component_configuration.pl  --do_build_sim=1    --sim_dir=/tmp/alt0109_1733681350385518826.dir/0046_pio_0_gen/  ]
+Info: pio_0: Done RTL generation for module 'maoin_pio_0'
+Info: pio_0: "maoin" instantiated altera_avalon_pio "pio_0"
 Info: ram: Starting RTL generation for module 'maoin_ram'
-Info: ram:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=maoin_ram --dir=/tmp/alt0101_4626221225866863836.dir/0053_ram_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --vhdl --config=/tmp/alt0101_4626221225866863836.dir/0053_ram_gen//maoin_ram_component_configuration.pl  --do_build_sim=1    --sim_dir=/tmp/alt0101_4626221225866863836.dir/0053_ram_gen/  ]
+Info: ram:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=maoin_ram --dir=/tmp/alt0109_1733681350385518826.dir/0047_ram_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --vhdl --config=/tmp/alt0109_1733681350385518826.dir/0047_ram_gen//maoin_ram_component_configuration.pl  --do_build_sim=1    --sim_dir=/tmp/alt0109_1733681350385518826.dir/0047_ram_gen/  ]
 Info: ram: Done RTL generation for module 'maoin_ram'
 Info: ram: "maoin" instantiated altera_avalon_onchip_memory2 "ram"
+Info: cpu_custom_instruction_master_translator: "maoin" instantiated altera_customins_master_translator "cpu_custom_instruction_master_translator"
+Info: cpu_custom_instruction_master_multi_xconnect: "maoin" instantiated altera_customins_xconnect "cpu_custom_instruction_master_multi_xconnect"
+Info: cpu_custom_instruction_master_multi_slave_translator0: "maoin" instantiated altera_customins_slave_translator "cpu_custom_instruction_master_multi_slave_translator0"
 Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_003: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_004: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_005: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_006: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_007: Inserting error_adapter: error_adapter_0
 Info: mm_interconnect_0: "maoin" instantiated altera_mm_interconnect "mm_interconnect_0"
 Info: irq_mapper: "maoin" instantiated altera_irq_mapper "irq_mapper"
 Info: rst_controller: "maoin" instantiated altera_reset_controller "rst_controller"
 Info: cpu: Starting RTL generation for module 'maoin_cpu_cpu'
-Info: cpu:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64//perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64//perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/cpu_lib -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/nios_lib -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2 -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2 -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/generate_rtl.pl --name=maoin_cpu_cpu --dir=/tmp/alt0101_4626221225866863836.dir/0056_cpu_gen/ --quartus_bindir=/home/kanken/opt/intel/20.1/quartus/linux64/ --verilog --config=/tmp/alt0101_4626221225866863836.dir/0056_cpu_gen//maoin_cpu_cpu_processor_configuration.pl  --do_build_sim=1    --sim_dir=/tmp/alt0101_4626221225866863836.dir/0056_cpu_gen/  ]
-Info: cpu: # 2025.01.13 14:30:36 (*) Starting Nios II generation
-Info: cpu: # 2025.01.13 14:30:36 (*)   Elaborating CPU configuration settings
-Info: cpu: # 2025.01.13 14:30:36 (*)   Creating all objects for CPU
-Info: cpu: # 2025.01.13 14:30:36 (*)   Creating '/tmp/alt0101_4626221225866863836.dir/0056_cpu_gen//maoin_cpu_cpu_nios2_waves.do'
-Info: cpu: # 2025.01.13 14:30:36 (*)   Generating RTL from CPU objects
-Info: cpu: # 2025.01.13 14:30:36 (*)   Creating plain-text RTL
-Info: cpu: # 2025.01.13 14:30:36 (*) Done Nios II generation
+Info: cpu:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64//perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64//perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/cpu_lib -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/nios_lib -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2 -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2 -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/generate_rtl.pl --name=maoin_cpu_cpu --dir=/tmp/alt0109_1733681350385518826.dir/0053_cpu_gen/ --quartus_bindir=/home/kanken/opt/intel/20.1/quartus/linux64/ --verilog --config=/tmp/alt0109_1733681350385518826.dir/0053_cpu_gen//maoin_cpu_cpu_processor_configuration.pl  --do_build_sim=1    --sim_dir=/tmp/alt0109_1733681350385518826.dir/0053_cpu_gen/  ]
+Info: cpu: # 2025.01.21 21:17:48 (*) Starting Nios II generation
+Info: cpu: # 2025.01.21 21:17:48 (*)   Elaborating CPU configuration settings
+Info: cpu: # 2025.01.21 21:17:48 (*)   Creating all objects for CPU
+Info: cpu: # 2025.01.21 21:17:48 (*)   Creating '/tmp/alt0109_1733681350385518826.dir/0053_cpu_gen//maoin_cpu_cpu_nios2_waves.do'
+Info: cpu: # 2025.01.21 21:17:48 (*)   Generating RTL from CPU objects
+Info: cpu: # 2025.01.21 21:17:48 (*)   Creating plain-text RTL
+Info: cpu: # 2025.01.21 21:17:48 (*) Done Nios II generation
 Info: cpu: Done RTL generation for module 'maoin_cpu_cpu'
 Info: cpu: "cpu" instantiated altera_nios2_gen2_unit "cpu"
 Info: cpu_data_master_translator: "mm_interconnect_0" instantiated altera_merlin_master_translator "cpu_data_master_translator"
@@ -62,123 +83,121 @@ Info: router: "mm_interconnect_0" instantiated altera_merlin_router "router"
 Info: router_001: "mm_interconnect_0" instantiated altera_merlin_router "router_001"
 Info: router_002: "mm_interconnect_0" instantiated altera_merlin_router "router_002"
 Info: router_003: "mm_interconnect_0" instantiated altera_merlin_router "router_003"
-Info: router_004: "mm_interconnect_0" instantiated altera_merlin_router "router_004"
+Info: router_007: "mm_interconnect_0" instantiated altera_merlin_router "router_007"
 Info: AV2SEGM3_0_avalon_slave_burst_adapter: "mm_interconnect_0" instantiated altera_merlin_burst_adapter "AV2SEGM3_0_avalon_slave_burst_adapter"
 Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
 Info: cmd_demux_001: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux_001"
 Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
-Info: cmd_mux_002: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_002"
-Info: Reusing file /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/submodules/altera_merlin_arbitrator.sv
+Info: cmd_mux_005: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_005"
+Info: Reusing file /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/submodules/altera_merlin_arbitrator.sv
 Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
 Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
-Info: Reusing file /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/submodules/altera_merlin_arbitrator.sv
 Info: rsp_mux_001: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux_001"
-Info: Reusing file /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/submodules/altera_merlin_arbitrator.sv
 Info: AV2SEGM3_0_avalon_slave_rsp_width_adapter: "mm_interconnect_0" instantiated altera_merlin_width_adapter "AV2SEGM3_0_avalon_slave_rsp_width_adapter"
-Info: Reusing file /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/submodules/altera_merlin_address_alignment.sv
-Info: Reusing file /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/submodules/altera_merlin_burst_uncompressor.sv
+Info: Reusing file /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/submodules/altera_merlin_address_alignment.sv
+Info: Reusing file /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/submodules/altera_merlin_burst_uncompressor.sv
 Info: avalon_st_adapter: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter"
 Info: avalon_st_adapter_001: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter_001"
 Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
 Info: error_adapter_0: "avalon_st_adapter_001" instantiated error_adapter "error_adapter_0"
-Info: maoin: Done "maoin" with 33 modules, 63 files
+Info: maoin: Done "maoin" with 39 modules, 76 files
 Info: qsys-generate succeeded.
 Info: Finished: Create simulation model
 Info: Starting: Create Modelsim Project.
-Info: sim-script-gen --spd=/home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/maoin.spd --output-directory=/home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/ --use-relative-paths=true
-Info: Doing: ip-make-simscript --spd=/home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/maoin.spd --output-directory=/home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/ --use-relative-paths=true
-Info: Generating the following file(s) for MODELSIM simulator in /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/ directory:
+Info: sim-script-gen --spd=/home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/maoin.spd --output-directory=/home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/ --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=/home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/maoin.spd --output-directory=/home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/ directory:
 Info: 	mentor/msim_setup.tcl
 Info: Skipping VCS script generation since VHDL file $QUARTUS_INSTALL_DIR/eda/sim_lib/altera_syn_attributes.vhd is required for simulation
-Info: Generating the following file(s) for VCSMX simulator in /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/ directory:
+Info: Generating the following file(s) for VCSMX simulator in /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/ directory:
 Info: 	synopsys/vcsmx/synopsys_sim.setup
 Info: 	synopsys/vcsmx/vcsmx_setup.sh
-Info: Generating the following file(s) for NCSIM simulator in /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/ directory:
+Info: Generating the following file(s) for NCSIM simulator in /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/ directory:
 Info: 	cadence/cds.lib
 Info: 	cadence/hdl.var
 Info: 	cadence/ncsim_setup.sh
-Info: 	30 .cds.lib files in cadence/cds_libs/ directory
-Info: Generating the following file(s) for RIVIERA simulator in /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/ directory:
+Info: 	36 .cds.lib files in cadence/cds_libs/ directory
+Info: Generating the following file(s) for RIVIERA simulator in /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/ directory:
 Info: 	aldec/rivierapro_setup.tcl
-Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/simulation/.
+Info: For information on how to simulate your IP, see the explanatory comments in the simulator-specific subdirectories under /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/simulation/.
 Info: Regenerate these scripts whenever you make any change to any Quartus-generated IP in your project.
 Info: Finished: Create Modelsim Project.
-Info: Starting: Create block symbol file (.bsf)
-Info: qsys-generate /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin.qsys --block-symbol-file --output-directory=/home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin --family="MAX 10" --part=10M50DAF484C7G
-Progress: Loading GEOFFRE_Lab2/maoin.qsys
-Progress: Reading input file
-Progress: Adding AV2SEGM3_0 [AV2SEGM3 1.0]
-Progress: Parameterizing module AV2SEGM3_0
-Progress: Adding btn0 [altera_avalon_pio 20.1]
-Progress: Parameterizing module btn0
-Progress: Adding clk [clock_source 20.1]
-Progress: Parameterizing module clk
-Progress: Adding cpu [altera_nios2_gen2 20.1]
-Progress: Parameterizing module cpu
-Progress: Adding jtag_uart_0 [altera_avalon_jtag_uart 20.1]
-Progress: Parameterizing module jtag_uart_0
-Progress: Adding ram [altera_avalon_onchip_memory2 20.1]
-Progress: Parameterizing module ram
-Progress: Building connections
-Progress: Parameterizing connections
-Progress: Validating
-Progress: Done reading input file
-Info: maoin.jtag_uart_0: JTAG UART IP input clock need to be at least double (2x) the operating frequency of JTAG TCK on board
-Info: qsys-generate succeeded.
-Info: Finished: Create block symbol file (.bsf)
 Info: 
 Info: Starting: Create HDL design files for synthesis
-Info: qsys-generate /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin.qsys --synthesis=VHDL --output-directory=/home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/synthesis --family="MAX 10" --part=10M50DAF484C7G
-Progress: Loading GEOFFRE_Lab2/maoin.qsys
+Info: qsys-generate /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin.qsys --synthesis=VHDL --output-directory=/home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/synthesis --family="MAX 10" --part=10M50DAF484C7G
+Progress: Loading GEOFFRE_Project_vga/maoin.qsys
 Progress: Reading input file
 Progress: Adding AV2SEGM3_0 [AV2SEGM3 1.0]
 Progress: Parameterizing module AV2SEGM3_0
-Progress: Adding btn0 [altera_avalon_pio 20.1]
-Progress: Parameterizing module btn0
+Progress: Adding AV2SEGM3_1 [AV2SEGM3 1.0]
+Progress: Parameterizing module AV2SEGM3_1
+Progress: Adding VGA_0 [VGA 1.0]
+Progress: Parameterizing module VGA_0
 Progress: Adding clk [clock_source 20.1]
 Progress: Parameterizing module clk
 Progress: Adding cpu [altera_nios2_gen2 20.1]
 Progress: Parameterizing module cpu
 Progress: Adding jtag_uart_0 [altera_avalon_jtag_uart 20.1]
 Progress: Parameterizing module jtag_uart_0
+Progress: Adding nios_custom_instr_floating_point_0 [altera_nios_custom_instr_floating_point 20.1]
+Progress: Parameterizing module nios_custom_instr_floating_point_0
+Progress: Adding opencores_i2c_0 [opencores_i2c 9.1]
+Progress: Parameterizing module opencores_i2c_0
+Progress: Adding pio_0 [altera_avalon_pio 20.1]
+Progress: Parameterizing module pio_0
 Progress: Adding ram [altera_avalon_onchip_memory2 20.1]
 Progress: Parameterizing module ram
 Progress: Building connections
 Progress: Parameterizing connections
 Progress: Validating
 Progress: Done reading input file
+Warning: maoin.VGA: The SIM_VERILOG fileset must specify the top-level module name.
 Info: maoin.jtag_uart_0: JTAG UART IP input clock need to be at least double (2x) the operating frequency of JTAG TCK on board
+Info: maoin.pio_0: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
 Info: maoin: Generating maoin "maoin" for QUARTUS_SYNTH
+Warning: maoin: "No matching role found for cpu_custom_instruction_master_multi_xconnect:ci_slave:ci_slave_ipending (ipending)"
+Warning: maoin: "No matching role found for cpu_custom_instruction_master_multi_xconnect:ci_slave:ci_slave_estatus (estatus)"
 Info: AV2SEGM3_0: "maoin" instantiated AV2SEGM3 "AV2SEGM3_0"
-Info: btn0: Starting RTL generation for module 'maoin_btn0'
-Info: btn0:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=maoin_btn0 --dir=/tmp/alt0101_4626221225866863836.dir/0080_btn0_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --verilog --config=/tmp/alt0101_4626221225866863836.dir/0080_btn0_gen//maoin_btn0_component_configuration.pl  --do_build_sim=0  ]
-Info: btn0: Done RTL generation for module 'maoin_btn0'
-Info: btn0: "maoin" instantiated altera_avalon_pio "btn0"
+Info: VGA_0: "maoin" instantiated VGA "VGA_0"
 Info: cpu: "maoin" instantiated altera_nios2_gen2 "cpu"
 Info: jtag_uart_0: Starting RTL generation for module 'maoin_jtag_uart_0'
-Info: jtag_uart_0:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart/generate_rtl.pl --name=maoin_jtag_uart_0 --dir=/tmp/alt0101_4626221225866863836.dir/0081_jtag_uart_0_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --verilog --config=/tmp/alt0101_4626221225866863836.dir/0081_jtag_uart_0_gen//maoin_jtag_uart_0_component_configuration.pl  --do_build_sim=0  ]
+Info: jtag_uart_0:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart/generate_rtl.pl --name=maoin_jtag_uart_0 --dir=/tmp/alt0109_1733681350385518826.dir/0078_jtag_uart_0_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --verilog --config=/tmp/alt0109_1733681350385518826.dir/0078_jtag_uart_0_gen//maoin_jtag_uart_0_component_configuration.pl  --do_build_sim=0  ]
 Info: jtag_uart_0: Done RTL generation for module 'maoin_jtag_uart_0'
 Info: jtag_uart_0: "maoin" instantiated altera_avalon_jtag_uart "jtag_uart_0"
+Info: nios_custom_instr_floating_point_0: "maoin" instantiated altera_nios_custom_instr_floating_point "nios_custom_instr_floating_point_0"
+Info: opencores_i2c_0: "maoin" instantiated opencores_i2c "opencores_i2c_0"
+Info: pio_0: Starting RTL generation for module 'maoin_pio_0'
+Info: pio_0:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=maoin_pio_0 --dir=/tmp/alt0109_1733681350385518826.dir/0080_pio_0_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --verilog --config=/tmp/alt0109_1733681350385518826.dir/0080_pio_0_gen//maoin_pio_0_component_configuration.pl  --do_build_sim=0  ]
+Info: pio_0: Done RTL generation for module 'maoin_pio_0'
+Info: pio_0: "maoin" instantiated altera_avalon_pio "pio_0"
 Info: ram: Starting RTL generation for module 'maoin_ram'
-Info: ram:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=maoin_ram --dir=/tmp/alt0101_4626221225866863836.dir/0082_ram_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --verilog --config=/tmp/alt0101_4626221225866863836.dir/0082_ram_gen//maoin_ram_component_configuration.pl  --do_build_sim=0  ]
+Info: ram:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64/perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64/perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/common -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=maoin_ram --dir=/tmp/alt0109_1733681350385518826.dir/0081_ram_gen/ --quartus_dir=/home/kanken/opt/intel/20.1/quartus --verilog --config=/tmp/alt0109_1733681350385518826.dir/0081_ram_gen//maoin_ram_component_configuration.pl  --do_build_sim=0  ]
 Info: ram: Done RTL generation for module 'maoin_ram'
 Info: ram: "maoin" instantiated altera_avalon_onchip_memory2 "ram"
+Info: cpu_custom_instruction_master_translator: "maoin" instantiated altera_customins_master_translator "cpu_custom_instruction_master_translator"
+Info: cpu_custom_instruction_master_multi_xconnect: "maoin" instantiated altera_customins_xconnect "cpu_custom_instruction_master_multi_xconnect"
+Info: cpu_custom_instruction_master_multi_slave_translator0: "maoin" instantiated altera_customins_slave_translator "cpu_custom_instruction_master_multi_slave_translator0"
 Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_003: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_004: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_005: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_006: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_007: Inserting error_adapter: error_adapter_0
 Info: mm_interconnect_0: "maoin" instantiated altera_mm_interconnect "mm_interconnect_0"
 Info: irq_mapper: "maoin" instantiated altera_irq_mapper "irq_mapper"
 Info: rst_controller: "maoin" instantiated altera_reset_controller "rst_controller"
 Info: cpu: Starting RTL generation for module 'maoin_cpu_cpu'
-Info: cpu:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64//perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64//perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/cpu_lib -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/nios_lib -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2 -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2 -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/generate_rtl.pl --name=maoin_cpu_cpu --dir=/tmp/alt0101_4626221225866863836.dir/0085_cpu_gen/ --quartus_bindir=/home/kanken/opt/intel/20.1/quartus/linux64/ --verilog --config=/tmp/alt0101_4626221225866863836.dir/0085_cpu_gen//maoin_cpu_cpu_processor_configuration.pl  --do_build_sim=0  ]
-Info: cpu: # 2025.01.13 14:30:38 (*) Starting Nios II generation
-Info: cpu: # 2025.01.13 14:30:38 (*)   Elaborating CPU configuration settings
-Info: cpu: # 2025.01.13 14:30:38 (*)   Creating all objects for CPU
-Info: cpu: # 2025.01.13 14:30:39 (*)   Generating RTL from CPU objects
-Info: cpu: # 2025.01.13 14:30:39 (*)   Creating plain-text RTL
-Info: cpu: # 2025.01.13 14:30:39 (*) Done Nios II generation
+Info: cpu:   Generation command is [exec /home/kanken/opt/intel/20.1/quartus/linux64//perl/bin/perl -I /home/kanken/opt/intel/20.1/quartus/linux64//perl/lib -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin/europa -I /home/kanken/opt/intel/20.1/quartus/sopc_builder/bin -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/cpu_lib -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/nios_lib -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2 -I /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2 -- /home/kanken/opt/intel/20.1/quartus/../ip/altera/nios2_ip/altera_nios2_gen2/generate_rtl.pl --name=maoin_cpu_cpu --dir=/tmp/alt0109_1733681350385518826.dir/0087_cpu_gen/ --quartus_bindir=/home/kanken/opt/intel/20.1/quartus/linux64/ --verilog --config=/tmp/alt0109_1733681350385518826.dir/0087_cpu_gen//maoin_cpu_cpu_processor_configuration.pl  --do_build_sim=0  ]
+Info: cpu: # 2025.01.21 21:17:50 (*) Starting Nios II generation
+Info: cpu: # 2025.01.21 21:17:50 (*)   Elaborating CPU configuration settings
+Info: cpu: # 2025.01.21 21:17:50 (*)   Creating all objects for CPU
+Info: cpu: # 2025.01.21 21:17:50 (*)   Generating RTL from CPU objects
+Info: cpu: # 2025.01.21 21:17:50 (*)   Creating plain-text RTL
+Info: cpu: # 2025.01.21 21:17:51 (*) Done Nios II generation
 Info: cpu: Done RTL generation for module 'maoin_cpu_cpu'
 Info: cpu: "cpu" instantiated altera_nios2_gen2_unit "cpu"
 Info: cpu_data_master_translator: "mm_interconnect_0" instantiated altera_merlin_master_translator "cpu_data_master_translator"
@@ -190,25 +209,25 @@ Info: router: "mm_interconnect_0" instantiated altera_merlin_router "router"
 Info: router_001: "mm_interconnect_0" instantiated altera_merlin_router "router_001"
 Info: router_002: "mm_interconnect_0" instantiated altera_merlin_router "router_002"
 Info: router_003: "mm_interconnect_0" instantiated altera_merlin_router "router_003"
-Info: router_004: "mm_interconnect_0" instantiated altera_merlin_router "router_004"
+Info: router_007: "mm_interconnect_0" instantiated altera_merlin_router "router_007"
 Info: AV2SEGM3_0_avalon_slave_burst_adapter: "mm_interconnect_0" instantiated altera_merlin_burst_adapter "AV2SEGM3_0_avalon_slave_burst_adapter"
 Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
 Info: cmd_demux_001: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux_001"
 Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
-Info: cmd_mux_002: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_002"
-Info: Reusing file /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: cmd_mux_005: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_005"
+Info: Reusing file /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
 Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
-Info: Reusing file /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: rsp_mux_001: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux_001"
-Info: Reusing file /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: AV2SEGM3_0_avalon_slave_rsp_width_adapter: "mm_interconnect_0" instantiated altera_merlin_width_adapter "AV2SEGM3_0_avalon_slave_rsp_width_adapter"
-Info: Reusing file /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/synthesis/submodules/altera_merlin_address_alignment.sv
-Info: Reusing file /home/kanken/code/ESN2025/GEOFFRE_Lab2/maoin/synthesis/submodules/altera_merlin_burst_uncompressor.sv
+Info: Reusing file /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: Reusing file /home/kanken/Documents/vhdl_prj/GEOFFRE_Project_vga/maoin/synthesis/submodules/altera_merlin_burst_uncompressor.sv
 Info: avalon_st_adapter: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter"
 Info: avalon_st_adapter_001: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter_001"
 Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
 Info: error_adapter_0: "avalon_st_adapter_001" instantiated error_adapter "error_adapter_0"
-Info: maoin: Done "maoin" with 33 modules, 56 files
+Info: maoin: Done "maoin" with 39 modules, 69 files
 Info: qsys-generate succeeded.
 Info: Finished: Create HDL design files for synthesis

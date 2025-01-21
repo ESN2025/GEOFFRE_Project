@@ -11,6 +11,24 @@ add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/i_waitre
 add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/i_address
 add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/i_read
 add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/i_readdata
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_dataa
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_datab
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/W_ci_ipending
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/W_ci_status
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/W_ci_estatus
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/D_ci_n
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/D_ci_a
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/D_ci_b
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/D_ci_c
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/D_ci_readra
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/D_ci_readrb
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/D_ci_writerc
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_result
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_multi_clk_en
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_multi_clock
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_multi_reset
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_multi_start
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_multi_done
 add wave -noupdate -divider {maoin_cpu_cpu: common}
 add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/clk
 add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/reset_n
@@ -36,6 +54,23 @@ add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/hbreak_r
 add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/oci_hbreak_req
 add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/hbreak_enabled
 add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/wait_for_one_post_bret_inst
+add wave -noupdate -divider {maoin_cpu_cpu: custom_instruction}
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/R_ctrl_custom
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/R_ctrl_custom_multi
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_dataa
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_datab
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/W_ipending_reg
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/W_status_reg
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/W_estatus_reg
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/D_ci_n
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/D_ci_readra
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/D_ci_readrb
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/D_ci_writerc
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_result
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_multi_clk_en
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_multi_start
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_multi_done
+add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/E_ci_multi_stall
 add wave -noupdate -divider {maoin_cpu_cpu: i_master}
 add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/i_read
 add wave -noupdate -format Logic -radix hexadecimal /NIOS2_INSTANCE_TOP/i_waitrequest

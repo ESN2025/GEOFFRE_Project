@@ -29,7 +29,7 @@ use ieee.std_logic_unsigned.all;
 entity maoin_ram is 
         port (
               -- inputs:
-                 signal address : IN STD_LOGIC_VECTOR (12 DOWNTO 0);
+                 signal address : IN STD_LOGIC_VECTOR (14 DOWNTO 0);
                  signal byteenable : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
                  signal chipselect : IN STD_LOGIC;
                  signal clk : IN STD_LOGIC;
@@ -65,10 +65,10 @@ GENERIC (
       );
     PORT (
     signal q_a : OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
-        signal data_a : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
-        signal clocken0 : IN STD_LOGIC;
         signal byteena_a : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-        signal address_a : IN STD_LOGIC_VECTOR (12 DOWNTO 0);
+        signal clocken0 : IN STD_LOGIC;
+        signal data_a : IN STD_LOGIC_VECTOR (31 DOWNTO 0);
+        signal address_a : IN STD_LOGIC_VECTOR (14 DOWNTO 0);
         signal wren_a : IN STD_LOGIC;
         signal clock0 : IN STD_LOGIC
       );
@@ -86,8 +86,8 @@ begin
       byte_size => 8,
       init_file => "UNUSED",
       lpm_type => "altsyncram",
-      maximum_depth => 5024,
-      numwords_a => 5024,
+      maximum_depth => 25000,
+      numwords_a => 25000,
       operation_mode => "SINGLE_PORT",
       outdata_reg_a => "UNREGISTERED",
       ram_block_type => "AUTO",
@@ -95,7 +95,7 @@ begin
       read_during_write_mode_port_a => "DONT_CARE",
       width_a => 32,
       width_byteena_a => 4,
-      widthad_a => 13
+      widthad_a => 15
     )
     port map(
             address_a => address,
