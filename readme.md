@@ -46,7 +46,7 @@ config:
     showValues: false
 ---
 sankey-beta
-NIOS2, AVMM, 0.4
+NIOS2, AVMM, 0.5
 AVMM, AV2SEGM, 0.22
 AVMM, Timer_0, 0.05
 AVMM, PIO(button), 0.03
@@ -55,6 +55,8 @@ PIO(button), btn_i(1), 0.03
 AV2SEGM, 7-Segment (Ones), 0.073
 AV2SEGM, 7-Segment (Tens), 0.073
 AV2SEGM, 7-Segment (Hundreds), 0.073
+AVMM, I2C, 0.1
+I2C, Accelero, 0.1
 VGA, HS, 0.03
 VGA, VS, 0.03
 VGA, RGB, 0.035
