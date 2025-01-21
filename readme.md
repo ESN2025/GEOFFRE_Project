@@ -47,8 +47,8 @@ sankey-beta
 NIOS2, AVMM, 0.3
 AVMM, AV2SEGM, 0.22
 AVMM, Timer_0, 0.05
-AVMM, PIO(button) [unused], 0.03
-PIO(button) [unused], btn_i(1), 0.03
+AVMM, PIO(button), 0.03
+PIO(button), btn_i(1), 0.03
 AV2SEGM, 7-Segment (Ones), 0.073
 AV2SEGM, 7-Segment (Tens), 0.073
 AV2SEGM, 7-Segment (Hundreds), 0.073
@@ -65,7 +65,6 @@ RESET, NIOS2, 0.05
 
 rectangle NIOS2
 rectangle Reset
-rectangle Jtag
 rectangle "Clock 50MHz"
 rectangle "M10K Memory"
 rectangle "AVMM Data Bus"
@@ -73,18 +72,19 @@ rectangle "AVMM Instruction Bus"
 rectangle "AV2SEGM3_1"
 rectangle "AV2SEGM3_2"
 rectangle "opencores_i2c"
+rectangle "PIO"
 
-NIOS2 <-u-> Reset 
-NIOS2 <-r-> "Clock 50MHz"
+NIOS2 <-u- Reset 
+NIOS2 <-u- "Clock 50MHz"
 NIOS2 <-l-> "AVMM Instruction Bus"
 NIOS2 <-d-> "AVMM Data Bus"
+NIOS2 <-d- "PIO" : IRQ
+PIO <-d- button
 "AVMM Instruction Bus" <-d-> "M10K Memory"
-"AVMM Data Bus" -r-> Jtag
 "AVMM Data Bus" -d-> "AV2SEGM3_1"
 "AVMM Data Bus" -d-> "AV2SEGM3_2"
 "AVMM Data Bus" -l-> "M10K Memory"
 "AVMM Data Bus" --> "opencores_i2c"
-"Clock 50MHz" --> "opencores_i2c"
 "opencores_i2c" --> "scl"
 "opencores_i2c" --> "sda"
 "AV2SEGM3_1" -d-> "7 segment 1"
@@ -117,7 +117,23 @@ alt_u8 read8bit(alt_u32 addr, alt_u32 reg_addr){...}
 
 void write8bit(alt_u32 addr, alt_u32 reg_addr, alt_u8 dat){...}
 ```
-These two functions are mainly used for verifying and setting up the Accelerometer's registers prior to data acquisition. They 
+These two functions are mainly used for verifying and setting up the Accelerometer's registers prior to data acquisition.
+
+There is an I2C scanner that's implemented to see if the IMU is detected or not, it works by checking the error return of the I2C start function on a range of addresses.
+
+```c
+void scanI2CDevices(void){
+    ...
+    for (address = 0x03; address <= 0x20; address++)
+    {
+        if(I2C_start(OPENCORES_I2C_0_BASE, address, 1) == 0)
+            alt_printf("\r\nDevice found at address 0x%x\r\n", address);
+        else
+            alt_printf(" NODEV: %x ", address);
+    }
+    ...
+}
+```
 
 The actual Accelerometer data acq is done in a different way to minimize overhead and latency:
 ```c
