@@ -115,8 +115,7 @@ I won't document the things i already documented in the [main(old)](https://gith
 
 First of all and the most obvious, a VGA interface has been made from scratch. It outputs 640x480 12 bit RGB video at 30 Fps from a 50 Mhz clock (might be 60 Fps but i have conflicting info on this because in theory it should work at 25.125Mhz but this frequency doesn't work right, whereas just 50 does? moving on...).
 
-This interface does double duty: it both manages the 12 bit vga port, but it also takes in a 2D coordinate through AVMM, this coordinate is used in it's drawing combinatorial logic to place the red "crosshair" in the white "box", see here:
-<video controls src="./ip/VGA/doc/VID_20250121_215244.mp4" title="Title"></video>
+This interface does double duty: it both manages the 12 bit vga port, but it also takes in a 2D coordinate through AVMM, this coordinate is used in it's drawing combinatorial logic to place the red "crosshair" in the white "box", see [here](./ip/VGA/doc/VID_20250121_215244.mp4)
 
 On the NIOS2 side, the sampling speed has been made faster and a simple low pass filter (average) has been implemented to make the crosshair less "jittery". The crosshair is managed in such a way that the values are locked for one frame at a time, the VHDL only updates it once the frame is finished to avoid tearing.
 
