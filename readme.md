@@ -46,15 +46,16 @@ config:
 sankey-beta
 NIOS2, AVMM, 0.3
 AVMM, AV2SEGM, 0.22
-AVMM, Timer_0, 0.05
-AVMM, PIO(button), 0.03
-PIO(button), btn_i(1), 0.03
+AVMM, PIO(button), 0.07
+AVMM, I2C, 0.07
+I2C, Accelerometer, 0.07
+PIO(button), btn_i(1), 0.1
 AV2SEGM, 7-Segment (Ones), 0.073
 AV2SEGM, 7-Segment (Tens), 0.073
 AV2SEGM, 7-Segment (Hundreds), 0.073
 JTAG, NIOS2, 0.1
 NIOS2, IRQ, 0.05
-IRQ, Timer_0, 0.05
+IRQ, PIO(button), 0.05
 M10K memory, NIOS2, 0.1
 CLK 50M, NIOS2, 0.05
 RESET, NIOS2, 0.05
@@ -183,4 +184,4 @@ There is one button that sends out an IRQ through a PIO to the NIOS2 core that c
 
 ## Conclusion
 
-The system works as whole, it could be improved a bit more by adding better calibration of the IMU and some alternative ways of displaying the data (VGA?)
+The system works as whole, it could be improved a bit more by adding better calibration of the IMU and some alternative ways of displaying the data (~~VGA?~~ already done, see the VGA branch.)
